@@ -85,7 +85,6 @@ namespace robotPu {
 
     //% group="Setup"
     //% block="set servo initial state left foot %leftFoot left leg %leftLeg right foot %rightFoot right leg %rightLeg head offset %headOffset head pitch %headPitch"
-    //% subcategory="Setup"
     //% leftFoot.defl=0 leftLeg.defl=0 rightFoot.defl=0 rightLeg.defl=0 headOffset.defl=0 headPitch.defl=0
     //% weight=80 blockGap=8
     export function setServoInitialState(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headOffset: number, headPitch: number): void {
@@ -94,7 +93,6 @@ namespace robotPu {
 
     //% group="Setup"
     //% block="set walk speed range forward %forward backward %backward"
-    //% subcategory="Setup"
     //% forward.min=0 forward.max=4 forward.defl=4
     //% backward.min=0 backward.max=3 backward.defl=3
     //% weight=79 blockGap=8
