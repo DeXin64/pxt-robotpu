@@ -13,5 +13,4 @@
     "robotPu.sing": "Sing. Make the robot sing the specified song or command.",
     "robotPu.setServoAngle": "Set servo angle. Directly rotate the specified servo to the target angle.",
     "robotPu.smoothSetServoAngle": "Smooth set servo angle. Smoothly rotate the specified servo to the target angle with the specified step length."
-
 }
