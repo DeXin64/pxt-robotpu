@@ -1,1 +1,16 @@
-{}
+{
+    "robotPu.setServoInitialState": "设置舵机初始状态。后台功能，仅供售后使用，用户无需操作。",
+    "robotPu.setWalkSpeedRange": "设置行走速度范围。配置机器人前进与后退的最大速度。",
+    "robotPu.ultrasonicDistance": "获取超声波传感器距离。返回超声波传感器检测到的距离值，单位可选择厘米或英寸。",
+    "robotPu.setAmbienceLight": "设置氛围灯。将选择的氛围灯设置为指定的 RGB 颜色。",
+    "robotPu.setEyesState": "设置左眼/右眼状态。打开或关闭左眼和右眼。",
+    "robotPu.setLeftEyeBrightness": "设置左眼亮度。调节左眼灯光的亮度。",
+    "robotPu.setRightEyeBrightness": "设置右眼亮度。调节右眼灯光的亮度。",
+    "robotPu.executeAction": "执行动作。执行指定的预设动作。选择“自主探索”时，机器人将向前行走并在遇到障碍物时自动转向；选择“远程控制”需与“远程控制”功能配合使用。",
+    "robotPu.setMoveDirection": "设置机器人移动方向。设置 PU 机器人的移动方向。",
+    "robotPu.setWalkSpeed": "设置机器人行走速度与转向。设置 PU 机器人的行走速度和转向方向。",
+    "robotPu.talk": "说话。让机器人说出指定的文本。",
+    "robotPu.sing": "唱歌。让机器人唱出指定的歌曲或指令。",
+    "robotPu.setServoAngle": "设置舵机角度。直接将指定舵机转动到目标角度。",
+    "robotPu.smoothSetServoAngle": "平滑设置舵机角度。以指定的步长平滑地将舵机转动到目标角度。"
+}
