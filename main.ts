@@ -1,7 +1,5 @@
-// MakeCode blocks wrapper for RobotPu
-//% weight=50 color=#e7660b icon="\uf2bd"
-//block="Robot PU"
-//% groups='["Variables", "Setup", "Sensors", "Actuators", "Actions", "Remote Control"]'
+//% color=#e7660b icon="\uf2bd"
+//block="robot PU" blockId="robotPu"
 namespace robotPu {
     
     export enum DistanceUnit {
