@@ -11,7 +11,11 @@
   },
   "files": [
     "robotpu.ts",
-    "main.ts"
+    "main.ts",
+    "_locales/pxt-robotpu-strings.json",
+    "_locales/pxt-robotpu-jsdoc-strings.json",
+    "_locales/zh/pxt-robotpu-strings.json",
+    "_locales/zh/pxt-robotpu-jsdoc-strings.json"
   ],
   "testFiles": [
     "test.ts"
