@@ -507,10 +507,7 @@ class WK {
      * Left eye brightness (0-1023).
      */
     public leftEyeBright(b: number): void {
-          // 只有在自动左闪烁启用时才执行闪烁逻辑
-        if (!this.autoLeftBlinkEnabled) {
-            return;
-        }
+        // 无论自动左闪烁是否启用，都可以设置左眼睛亮度
         pins.analogWritePin(AnalogPin.P12, b);
         this.leftEyeBrightness = b;
     }
@@ -519,10 +516,7 @@ class WK {
      * Right eye brightness (0-1023).
      */
     public rightEyeBright(b: number): void {
-          // 只有在自动右闪烁启用时才执行闪烁逻辑
-        if (!this.autoRightBlinkEnabled) {
-            return;
-        }
+        // 无论自动右闪烁是否启用，都可以设置右眼睛亮度
         pins.analogWritePin(AnalogPin.P13, b);
         this.rightEyeBrightness = b;
     }
