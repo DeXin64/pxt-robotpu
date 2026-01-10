@@ -531,17 +531,6 @@ class WK {
         if (this.eyeIsOn) {
             if (ts_diff > this.blinkInterval) {
                 this.eyesCtl(0);
-            } else {
-                let brightness = Math.min(1023, alert_l * 102);
-                this.blinkG = alert_l * 400;
-                if(this.autoLeftBlinkEnabled)
-                {
-                    this.leftEyeBright(brightness);
-                }
-                if(this.autoRightBlinkEnabled)
-                {
-                    this.rightEyeBright(brightness);
-                }
             }
         } else {
             if (ts_diff > Math.randomRange(100, 250)) {
