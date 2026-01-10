@@ -152,36 +152,7 @@ namespace robotPu {
     //% weight=65 blockGap=8
     //% inlineInputMode=inline
     export function setAmbienceLight(light: LightSelection, r: number, g: number, b: number): void {
-        const robot = ensureRobot();
-        
-        // 确保RGB值在0-255范围内
-        r = Math.max(0, Math.min(255, r));
-        g = Math.max(0, Math.min(255, g));
-        b = Math.max(0, Math.min(255, b));
-        
-        const color = neopixel.rgb(r, g, b);
-        
-        switch (light) {
-            case LightSelection.Light1:
-                robot.np.setPixelColor(0, color);
-                break;
-            case LightSelection.Light2:
-                robot.np.setPixelColor(1, color);
-                break;
-            case LightSelection.Light3:
-                robot.np.setPixelColor(2, color);
-                break;
-            case LightSelection.Light4:
-                robot.np.setPixelColor(3, color);
-                break;
-            case LightSelection.All:
-                for (let i = 0; i < 4; i++) {
-                    robot.np.setPixelColor(i, color);
-                }
-                break;
-        }
-        
-        robot.np.show();
+ 
     }
 
     /**
@@ -192,31 +163,7 @@ namespace robotPu {
     //% leftEye.defl=EyeState.On rightEye.defl=EyeState.On
     //% weight=64 blockGap=8
     export function setEyesState(leftEye: EyeState, rightEye: EyeState): void {
-        const robot = ensureRobot();
-        
-        // 眼睛控制：1为开，0为关
-        const leftState = leftEye === EyeState.On ? 1 : 0;
-        const rightState = rightEye === EyeState.On ? 1 : 0;
-        
-        // 同时控制两个眼睛
-        if (leftState === 1 && rightState === 1) {
-            robot.wk.eyesCtl(1);
-        } else if (leftState === 0 && rightState === 0) {
-            robot.wk.eyesCtl(0);
-        } else {
-            // 单独控制每个眼睛的亮度
-            if (leftState === 1) {
-                robot.wk.leftEyeBright(1023);
-            } else {
-                robot.wk.leftEyeBright(0);
-            }
-            
-            if (rightState === 1) {
-                robot.wk.rightEyeBright(1023);
-            } else {
-                robot.wk.rightEyeBright(0);
-            }
-        }
+ 
     }
 
     /**
@@ -227,11 +174,7 @@ namespace robotPu {
     //% brightness.min=0 brightness.max=100 brightness.defl=50
     //% weight=63 blockGap=8
     export function setLeftEyeBrightness(brightness: number): void {
-        const robot = ensureRobot();
-        
-        // 将0-100的亮度范围转换为0-1023的PWM值
-        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
-        robot.wk.leftEyeBright(pwmValue);
+ 
     }
 
     /**
@@ -242,11 +185,7 @@ namespace robotPu {
     //% brightness.min=0 brightness.max=100 brightness.defl=50
     //% weight=62 blockGap=8
     export function setRightEyeBrightness(brightness: number): void {
-        const robot = ensureRobot();
-        
-        // 将0-100的亮度范围转换为0-1023的PWM值
-        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
-        robot.wk.rightEyeBright(pwmValue);
+ 
     }
 
     /**
@@ -256,39 +195,7 @@ namespace robotPu {
     //% block="execute action %action"
     //% weight=55 blockGap=8
     export function executeAction(action: Action): void {
-        const robot = ensureRobot();
-        
-        switch (action) {
-            case Action.Greet:
-                // 打招呼动作
-                robot.gst = 0; // 先回到空闲状态
-                // 可以添加特定的打招呼动作逻辑
-                break;
-            case Action.Rest:
-                // 休息动作
-                robot.gst = 0;
-                break;
-            case Action.Explore:
-                // 自主探索
-                robot.gst = 1;
-                break;
-            case Action.Jump:
-                // 跳跃动作
-                robot.gst = 2;
-                break;
-            case Action.Dance:
-                // 跳舞动作
-                robot.gst = 3;
-                break;
-            case Action.Kick:
-                // 踢腿动作
-                robot.gst = 4;
-                break;
-            case Action.WalkRemote:
-                // 远程控制
-                robot.gst = 5;
-                break;
-        }
+ 
     }
 
     /**
@@ -298,30 +205,7 @@ namespace robotPu {
     //% block="set robot move direction %direction"
     //% weight=54 blockGap=8
     export function setMoveDirection(direction: MoveDirection): void {
-        const robot = ensureRobot();
-        
-        // 设置移动方向和速度
-        switch (direction) {
-            case MoveDirection.Forward:
-                robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
-                robot.walkDirection = 0; // 直行
-                break;
-            case MoveDirection.Backward:
-                robot.walkSpeed = robot.bwdSpeed; // 使用后退最大速度
-                robot.walkDirection = 0; // 直行
-                break;
-            case MoveDirection.SideLeft:
-                robot.walkSpeed = 0; // 停止前进/后退
-                robot.walkDirection = -1; // 左侧移
-                break;
-            case MoveDirection.SideRight:
-                robot.walkSpeed = 0; // 停止前进/后退
-                robot.walkDirection = 1; // 右侧移
-                break;
-        }
-        
-        // 设置为远程控制状态
-        robot.gst = 5;
+ 
     }
 
     /**
@@ -333,34 +217,7 @@ namespace robotPu {
     //% turn.defl=TurnDirection.Straight
     //% weight=53 blockGap=8
     export function setWalkSpeed(speed: number, turn: TurnDirection): void {
-        const robot = ensureRobot();
-        
-        // 将速度从-100~100范围映射到内部速度范围
-        // 前进最大速度为4，后退最大速度为-3
-        let normalizedSpeed = 0;
-        if (speed > 0) {
-            normalizedSpeed = (speed / 100) * robot.fwdSpeed;
-        } else if (speed < 0) {
-            normalizedSpeed = (speed / 100) * Math.abs(robot.bwdSpeed);
-        }
-        
-        robot.walkSpeed = normalizedSpeed;
-        
-        // 设置转向方向
-        switch (turn) {
-            case TurnDirection.Left:
-                robot.walkDirection = -1;
-                break;
-            case TurnDirection.Straight:
-                robot.walkDirection = 0;
-                break;
-            case TurnDirection.Right:
-                robot.walkDirection = 1;
-                break;
-        }
-        
-        // 设置为远程控制状态
-        robot.gst = 5;
+ 
     }
 
     /**
@@ -371,8 +228,7 @@ namespace robotPu {
     //% text.shadow=text
     //% weight=52 blockGap=8
     export function talk(text: string): void {
-        const robot = ensureRobot();
-        robot.talk(text);
+ 
     }
 
     /**
@@ -383,10 +239,7 @@ namespace robotPu {
     //% song.shadow=text
     //% weight=51 blockGap=8
     export function sing(song: string): void {
-        const robot = ensureRobot();
-        // 这里可以添加唱歌功能的实现
-        // 目前先使用talk方法作为占位
-        robot.talk(song);
+ 
     }
 
     /**
@@ -397,13 +250,7 @@ namespace robotPu {
     //% angle.min=0 angle.max=180 angle.defl=90
     //% weight=65 blockGap=8
     export function setServoAngle(joint: ServoJoint, angle: number): void {
-        const robot = ensureRobot();
-        
-        // 将关节类型转换为内部索引
-        const jointIndex = getServoIndex(joint);
-        if (jointIndex >= 0) {
-            robot.wk.servo(jointIndex, angle);
-        }
+ 
     }
 
     /**
@@ -415,34 +262,6 @@ namespace robotPu {
     //% step.min=1 step.max=20 step.defl=2
     //% weight=64 blockGap=8
     export function smoothSetServoAngle(joint: ServoJoint, angle: number, step: number): void {
-        const robot = ensureRobot();
-        
-        // 将关节类型转换为内部索引
-        const jointIndex = getServoIndex(joint);
-        if (jointIndex >= 0) {
-            robot.wk.servoStep(angle, step, jointIndex, robot.pr);
-        }
-    }
-
-    /**
-     * Helper function to convert ServoJoint enum to internal index
-     */
-    function getServoIndex(joint: ServoJoint): number {
-        switch (joint) {
-            case ServoJoint.LeftFoot:
-                return 0;
-            case ServoJoint.LeftLeg:
-                return 1;
-            case ServoJoint.RightFoot:
-                return 2;
-            case ServoJoint.RightLeg:
-                return 3;
-            case ServoJoint.HeadOffset:
-                return 4;
-            case ServoJoint.HeadPitch:
-                return 5;
-            default:
-                return -1;
-        }
+ 
     }
 }
