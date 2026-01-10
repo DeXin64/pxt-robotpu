@@ -359,8 +359,7 @@ class WK {
     private blinkG: number;
     private idle: boolean;
     public currentState: number;
-    private leftAutoBlinkEnabled: boolean; // 左眼自动闪烁启用/禁用标志
-    private rightAutoBlinkEnabled: boolean; // 右眼自动闪烁启用/禁用标志
+    private autoBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
 
     constructor() {
         this.i2cAddress = 16;
@@ -375,8 +374,7 @@ class WK {
         this.blinkG = 4000;
         this.idle = false;
         this.currentState = 0;
-        this.leftAutoBlinkEnabled = true; // 默认左眼启用自动闪烁
-        this.rightAutoBlinkEnabled = true; // 默认右眼启用自动闪烁
+        this.autoBlinkEnabled = true; // 默认启用自动闪烁
         // I2C is initialized automatically in MakeCode
     }
 
@@ -488,38 +486,11 @@ class WK {
 
     /**
      * Eyes ON/OFF control.
-     * @param left Left eye control (0 or 1)
-     * @param right Right eye control (0 or 1, defaults to left if not provided)
      */
-    public eyesCtl(left: number, right: number = left): void {
-        pins.digitalWritePin(DigitalPin.P12, left);
-        pins.digitalWritePin(DigitalPin.P13, right);
-        // 如果左右眼睛都关闭，则设置eyeIsOn为false，否则为true
-        this.eyeIsOn = (left == 1 || right == 1);
-        this.lastBlinkTS = control.millis();
-    }
-    
-    /**
-     * Left eye ON/OFF control.
-     * @param c Control value (0 or 1)
-     */
-    public leftEyeCtl(c: number): void {
+    public eyesCtl(c: number): void {
         pins.digitalWritePin(DigitalPin.P12, c);
-        // 检查右眼状态以确定整体eyeIsOn
-        const rightEyeState = pins.digitalReadPin(DigitalPin.P13);
-        this.eyeIsOn = (c == 1 || rightEyeState == 1);
-        this.lastBlinkTS = control.millis();
-    }
-    
-    /**
-     * Right eye ON/OFF control.
-     * @param c Control value (0 or 1)
-     */
-    public rightEyeCtl(c: number): void {
         pins.digitalWritePin(DigitalPin.P13, c);
-        // 检查左眼状态以确定整体eyeIsOn
-        const leftEyeState = pins.digitalReadPin(DigitalPin.P12);
-        this.eyeIsOn = (leftEyeState == 1 || c == 1);
+        this.eyeIsOn = (c == 1);
         this.lastBlinkTS = control.millis();
     }
 
@@ -527,6 +498,10 @@ class WK {
      * Left eye brightness (0-1023).
      */
     public leftEyeBright(b: number): void {
+          // 只有在自动闪烁启用时才执行闪烁逻辑
+        if (!this.autoBlinkEnabled) {
+            return;
+        }
         pins.analogWritePin(AnalogPin.P12, b);
         this.leftEyeBrightness = b;
     }
@@ -535,6 +510,10 @@ class WK {
      * Right eye brightness (0-1023).
      */
     public rightEyeBright(b: number): void {
+          // 只有在自动闪烁启用时才执行闪烁逻辑
+        if (!this.autoBlinkEnabled) {
+            return;
+        }
         pins.analogWritePin(AnalogPin.P13, b);
         this.rightEyeBrightness = b;
     }
@@ -543,34 +522,25 @@ class WK {
      * Blink animation logic.
      */
     public blink(alert_l: number): void {
-        // 只有在至少有一只眼睛启用自动闪烁时才执行闪烁逻辑
-        if (!this.leftAutoBlinkEnabled && !this.rightAutoBlinkEnabled) {
+        // 只有在自动闪烁启用时才执行闪烁逻辑
+        if (!this.autoBlinkEnabled) {
             return;
         }
 
         let ts_diff = control.millis() - this.lastBlinkTS;
-        let brightness = Math.min(1023, alert_l * 102);
-        this.blinkG = alert_l * 400;
 
         if (this.eyeIsOn) {
-            // 如果眼睛是睁开的，检查是否需要闪烁
             if (ts_diff > this.blinkInterval) {
-                // 根据左右眼睛的自动闪烁标志决定是否关闭对应的眼睛
-                const leftState = this.leftAutoBlinkEnabled ? 0 : 1;
-                const rightState = this.rightAutoBlinkEnabled ? 0 : 1;
-                this.eyesCtl(leftState, rightState);
+                this.eyesCtl(0);
             } else {
-                // 调整眼睛亮度
+                let brightness = Math.min(1023, alert_l * 102);
+                this.blinkG = alert_l * 400;
                 this.leftEyeBright(brightness);
                 this.rightEyeBright(brightness);
             }
         } else {
-            // 如果眼睛是关闭的，检查是否需要睁开
             if (ts_diff > Math.randomRange(100, 250)) {
-                // 根据左右眼睛的自动闪烁标志决定是否打开对应的眼睛
-                const leftState = this.leftAutoBlinkEnabled ? 1 : 0;
-                const rightState = this.rightAutoBlinkEnabled ? 1 : 0;
-                this.eyesCtl(leftState, rightState);
+                this.eyesCtl(1);
                 if (Math.randomRange(0, 4) == 0) {
                     this.blinkInterval = Math.randomRange(100, 250);
                 } else {
@@ -581,30 +551,15 @@ class WK {
     }
 
     /**
-     * Enable or disable auto blink functionality for both eyes or individual eyes.
+     * Enable or disable auto blink functionality.
      */
-    public setAutoBlinkEnabled(leftEnabled: boolean, rightEnabled: boolean = leftEnabled): void {
-        this.leftAutoBlinkEnabled = leftEnabled;
-        this.rightAutoBlinkEnabled = rightEnabled;
+    public setAutoBlinkEnabled(enabled: boolean): void {
+        this.autoBlinkEnabled = enabled;
         // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
-        if (!leftEnabled && !rightEnabled && !this.eyeIsOn) {
+        if (!enabled && !this.eyeIsOn) {
             // 确保眼睛保持关闭
             this.eyesCtl(0);
         }
-    }
-    
-    /**
-     * Enable or disable auto blink functionality for left eye.
-     */
-    public setLeftAutoBlinkEnabled(enabled: boolean): void {
-        this.leftAutoBlinkEnabled = enabled;
-    }
-    
-    /**
-     * Enable or disable auto blink functionality for right eye.
-     */
-    public setRightAutoBlinkEnabled(enabled: boolean): void {
-        this.rightAutoBlinkEnabled = enabled;
     }
 
     /**
