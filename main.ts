@@ -151,9 +151,39 @@ namespace robotPu {
     //% b.min=0 b.max=255 b.defl=255
     //% weight=65 blockGap=8
     //% inlineInputMode=inline
-    export function setAmbienceLight(light: LightSelection, r: number, g: number, b: number): void {
- 
+  export function setAmbienceLight(light: LightSelection, r: number, g: number, b: number): void {
+        const robot = ensureRobot();
+        
+        // 确保RGB值在0-255范围内
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+        
+        const color = neopixel.rgb(r, g, b);
+        
+        switch (light) {
+            case LightSelection.Light1:
+                robot.np.setPixelColor(0, color);
+                break;
+            case LightSelection.Light2:
+                robot.np.setPixelColor(1, color);
+                break;
+            case LightSelection.Light3:
+                robot.np.setPixelColor(2, color);
+                break;
+            case LightSelection.Light4:
+                robot.np.setPixelColor(3, color);
+                break;
+            case LightSelection.All:
+                for (let i = 0; i < 4; i++) {
+                    robot.np.setPixelColor(i, color);
+                }
+                break;
+        }
+        
+        robot.np.show();
     }
+
 
     /**
      * Set left/right eye state. Turn the left and right eyes on or off.
