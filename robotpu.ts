@@ -359,7 +359,8 @@ class WK {
     private blinkG: number;
     private idle: boolean;
     public currentState: number;
-    private autoBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
+    private autoLeftBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
+    private autoRightBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
 
     constructor() {
         this.i2cAddress = 16;
@@ -374,7 +375,8 @@ class WK {
         this.blinkG = 4000;
         this.idle = false;
         this.currentState = 0;
-        this.autoBlinkEnabled = true; // 默认启用自动闪烁
+        this.autoLeftBlinkEnabled = true; // 默认启用自动左闪烁
+        this.autoRightBlinkEnabled = true; // 默认启用自动右闪烁
         // I2C is initialized automatically in MakeCode
     }
 
@@ -488,8 +490,15 @@ class WK {
      * Eyes ON/OFF control.
      */
     public eyesCtl(c: number): void {
-        pins.digitalWritePin(DigitalPin.P12, c);
-        pins.digitalWritePin(DigitalPin.P13, c);
+        if(this.autoLeftBlinkEnabled)
+        {
+            pins.digitalWritePin(DigitalPin.P12, c);//left eye
+        }
+   
+        if(this.autoRightBlinkEnabled)
+        {
+            pins.digitalWritePin(DigitalPin.P13, c);//right eye
+        }
         this.eyeIsOn = (c == 1);
         this.lastBlinkTS = control.millis();
     }
@@ -498,8 +507,8 @@ class WK {
      * Left eye brightness (0-1023).
      */
     public leftEyeBright(b: number): void {
-          // 只有在自动闪烁启用时才执行闪烁逻辑
-        if (!this.autoBlinkEnabled) {
+          // 只有在自动左闪烁启用时才执行闪烁逻辑
+        if (!this.autoLeftBlinkEnabled) {
             return;
         }
         pins.analogWritePin(AnalogPin.P12, b);
@@ -510,8 +519,8 @@ class WK {
      * Right eye brightness (0-1023).
      */
     public rightEyeBright(b: number): void {
-          // 只有在自动闪烁启用时才执行闪烁逻辑
-        if (!this.autoBlinkEnabled) {
+          // 只有在自动右闪烁启用时才执行闪烁逻辑
+        if (!this.autoRightBlinkEnabled) {
             return;
         }
         pins.analogWritePin(AnalogPin.P13, b);
@@ -522,10 +531,6 @@ class WK {
      * Blink animation logic.
      */
     public blink(alert_l: number): void {
-        // 只有在自动闪烁启用时才执行闪烁逻辑
-        if (!this.autoBlinkEnabled) {
-            return;
-        }
 
         let ts_diff = control.millis() - this.lastBlinkTS;
 
@@ -535,8 +540,14 @@ class WK {
             } else {
                 let brightness = Math.min(1023, alert_l * 102);
                 this.blinkG = alert_l * 400;
-                this.leftEyeBright(brightness);
-                this.rightEyeBright(brightness);
+                if(this.autoLeftBlinkEnabled)
+                {
+                    this.leftEyeBright(brightness);
+                }
+                if(this.autoRightBlinkEnabled)
+                {
+                    this.rightEyeBright(brightness);
+                }
             }
         } else {
             if (ts_diff > Math.randomRange(100, 250)) {
@@ -551,14 +562,37 @@ class WK {
     }
 
     /**
-     * Enable or disable auto blink functionality.
+     * Enable or disable auto blink functionality for both eyes.
      */
     public setAutoBlinkEnabled(enabled: boolean): void {
-        this.autoBlinkEnabled = enabled;
+        this.autoLeftBlinkEnabled = enabled;
+        this.autoRightBlinkEnabled = enabled;
         // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
         if (!enabled && !this.eyeIsOn) {
             // 确保眼睛保持关闭
             this.eyesCtl(0);
+        }
+    }
+
+    /**
+     * Enable or disable auto blink functionality for left eye.
+     */
+    public setAutoLeftBlinkEnabled(enabled: boolean): void {
+        this.autoLeftBlinkEnabled = enabled;
+        // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
+        if (!enabled && !this.eyeIsOn) {
+            pins.digitalWritePin(DigitalPin.P12, 0); // 确保左眼睛保持关闭
+        }
+    }
+
+    /**
+     * Enable or disable auto blink functionality for right eye.
+     */
+    public setAutoRightBlinkEnabled(enabled: boolean): void {
+        this.autoRightBlinkEnabled = enabled;
+        // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
+        if (!enabled && !this.eyeIsOn) {
+            pins.digitalWritePin(DigitalPin.P13, 0); // 确保右眼睛保持关闭
         }
     }
 
