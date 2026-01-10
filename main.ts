@@ -118,7 +118,9 @@ namespace robotPu {
     //% backward.min=0 backward.max=3 backward.defl=3
     //% weight=79 blockGap=8
     export function setWalkSpeedRange(forward: number, backward: number): void {
- 
+        const robot = ensureRobot();
+        robot.setFwdMaxSpeed(forward);
+        robot.setBwdMaxSpeed(-backward); // 注意：后退速度在内部存储为负值
     }
 
     /**
