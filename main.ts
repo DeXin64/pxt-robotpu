@@ -402,7 +402,9 @@ namespace robotPu {
         // 将关节类型转换为内部索引
         const jointIndex = getServoIndex(joint);
         if (jointIndex >= 0) {
-            robot.wk.servo(jointIndex, angle);
+            angle = Math.min(180, Math.max(0, Math.floor(angle)));
+            robot.pr.servoTarget[jointIndex] = angle; // 更新目标位置
+            robot.wk.servo(jointIndex, angle); // 直接设置舵机角度
         }
     }
 
