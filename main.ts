@@ -234,17 +234,17 @@ namespace robotPu {
     //% weight=63 blockGap=8
     export function setLeftEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
-        
-        // 将0-100的亮度范围转换为0-1023的PWM值
-        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
-        robot.wk.leftEyeBright(pwmValue);
-        
-        // 如果设置的亮度大于0，启用左眼睛的自动闪烁功能
+          // 如果设置的亮度大于0，启用左眼睛的自动闪烁功能
         if (brightness > 0) {
             robot.wk.setAutoLeftBlinkEnabled(true);
         } else {
             robot.wk.setAutoLeftBlinkEnabled(false);
         }
+        // 将0-100的亮度范围转换为0-1023的PWM值
+        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
+        robot.wk.leftEyeBright(pwmValue);
+        
+      
     }
 
     /**
@@ -256,17 +256,19 @@ namespace robotPu {
     //% weight=62 blockGap=8
     export function setRightEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
-        
-        // 将0-100的亮度范围转换为0-1023的PWM值
-        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
-        robot.wk.rightEyeBright(pwmValue);
-        
+
         // 如果设置的亮度大于0，启用右眼睛的自动闪烁功能
         if (brightness > 0) {
             robot.wk.setAutoRightBlinkEnabled(true);
         } else {
             robot.wk.setAutoRightBlinkEnabled(false);
         }
+        
+        // 将0-100的亮度范围转换为0-1023的PWM值
+        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
+        robot.wk.rightEyeBright(pwmValue);
+        
+    
     }
 
     /**
