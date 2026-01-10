@@ -3,19 +3,19 @@
 namespace robotPu {
     let robot: RobotPu;
 
-    function ensureRobot(): RobotPu {
-        if (!robot) {
-            const sn = "pu-" + control.deviceSerialNumber();
-            robot = new RobotPu(sn, "peu");
-            robot.calibrate();
-            control.inBackground(function () {
-                while (true) {
-                    robot.updateStates();
-                    robot.stateMachine();
-                    basic.pause(5);
-                }
-            });
+    // 上电直接初始化机器人
+    const sn = "pu-" + control.deviceSerialNumber();
+    robot = new RobotPu(sn, "peu");
+    robot.calibrate();
+    control.inBackground(function () {
+        while (true) {
+            robot.updateStates();
+            robot.stateMachine();
+            basic.pause(5);
         }
+    });
+    
+    function ensureRobot(): RobotPu {
         return robot;
     }
     
