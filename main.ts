@@ -198,10 +198,19 @@ namespace robotPu {
         const leftState = leftEye === EyeState.On ? 1 : 0;
         const rightState = rightEye === EyeState.On ? 1 : 0;
         
+        // 判断是否需要禁用自动闪烁（当两个眼睛都关闭时）
+        const bothEyesOff = leftState === 0 && rightState === 0;
+        
+        if (bothEyesOff) {
+            robot.wk.setAutoBlinkEnabled(false); // 禁用自动闪烁
+        } else {
+            robot.wk.setAutoBlinkEnabled(true); // 启用自动闪烁
+        }
+        
         // 同时控制两个眼睛
         if (leftState === 1 && rightState === 1) {
             robot.wk.eyesCtl(1);
-        } else if (leftState === 0 && rightState === 0) {
+        } else if (bothEyesOff) {
             robot.wk.eyesCtl(0);
         } else {
             // 单独控制每个眼睛的亮度

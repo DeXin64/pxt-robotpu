@@ -359,6 +359,7 @@ class WK {
     private blinkG: number;
     private idle: boolean;
     public currentState: number;
+    private autoBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
 
     constructor() {
         this.i2cAddress = 16;
@@ -373,6 +374,7 @@ class WK {
         this.blinkG = 4000;
         this.idle = false;
         this.currentState = 0;
+        this.autoBlinkEnabled = true; // 默认启用自动闪烁
         // I2C is initialized automatically in MakeCode
     }
 
@@ -512,6 +514,11 @@ class WK {
      * Blink animation logic.
      */
     public blink(alert_l: number): void {
+        // 只有在自动闪烁启用时才执行闪烁逻辑
+        if (!this.autoBlinkEnabled) {
+            return;
+        }
+
         let ts_diff = control.millis() - this.lastBlinkTS;
 
         if (this.eyeIsOn) {
@@ -532,6 +539,18 @@ class WK {
                     this.blinkInterval = Math.randomRange(this.blinkG, this.blinkG * 2);
                 }
             }
+        }
+    }
+
+    /**
+     * Enable or disable auto blink functionality.
+     */
+    public setAutoBlinkEnabled(enabled: boolean): void {
+        this.autoBlinkEnabled = enabled;
+        // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
+        if (!enabled && !this.eyeIsOn) {
+            // 确保眼睛保持关闭
+            this.eyesCtl(0);
         }
     }
 
