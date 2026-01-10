@@ -3,19 +3,19 @@
 namespace robotPu {
     let robot: RobotPu;
 
-    // 上电直接初始化机器人
-    const sn = "pu-" + control.deviceSerialNumber();
-    robot = new RobotPu(sn, "peu");
-    robot.calibrate();
-    control.inBackground(function () {
-        while (true) {
-            robot.updateStates();
-            robot.stateMachine();
-            basic.pause(5);
-        }
-    });
-    
     function ensureRobot(): RobotPu {
+        if (!robot) {
+            const sn = "pu-" + control.deviceSerialNumber();
+            robot = new RobotPu(sn, "peu");
+            robot.calibrate();
+            control.inBackground(function () {
+                while (true) {
+                    robot.updateStates();
+                    robot.stateMachine();
+                    basic.pause(5);
+                }
+            });
+        }
         return robot;
     }
     
@@ -230,11 +230,14 @@ namespace robotPu {
      */
     //% group="Actuators"
     //% block="set left eye brightness %brightness"
-    //% brightness.min=0 brightness.max=1023 brightness.defl=50
+    //% brightness.min=0 brightness.max=100 brightness.defl=50
     //% weight=63 blockGap=8
     export function setLeftEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
-        robot.wk.leftEyeBright(brightness);
+        
+        // 将0-100的亮度范围转换为0-1023的PWM值
+        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
+        robot.wk.leftEyeBright(pwmValue);
     }
 
     /**
@@ -242,11 +245,14 @@ namespace robotPu {
      */
     //% group="Actuators"
     //% block="set right eye brightness %brightness"
-    //% brightness.min=0 brightness.max=1023 brightness.defl=50
+    //% brightness.min=0 brightness.max=100 brightness.defl=50
     //% weight=62 blockGap=8
     export function setRightEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
-        robot.wk.rightEyeBright(brightness);
+        
+        // 将0-100的亮度范围转换为0-1023的PWM值
+        const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
+        robot.wk.rightEyeBright(pwmValue);
     }
 
     /**

@@ -507,7 +507,10 @@ class WK {
      * Left eye brightness (0-1023).
      */
     public leftEyeBright(b: number): void {
-        // 无论自动左闪烁是否启用，都可以设置左眼睛亮度
+          // 只有在自动左闪烁启用时才执行闪烁逻辑
+        if (!this.autoLeftBlinkEnabled) {
+            return;
+        }
         pins.analogWritePin(AnalogPin.P12, b);
         this.leftEyeBrightness = b;
     }
@@ -516,7 +519,10 @@ class WK {
      * Right eye brightness (0-1023).
      */
     public rightEyeBright(b: number): void {
-        // 无论自动右闪烁是否启用，都可以设置右眼睛亮度
+          // 只有在自动右闪烁启用时才执行闪烁逻辑
+        if (!this.autoRightBlinkEnabled) {
+            return;
+        }
         pins.analogWritePin(AnalogPin.P13, b);
         this.rightEyeBrightness = b;
     }
@@ -531,6 +537,17 @@ class WK {
         if (this.eyeIsOn) {
             if (ts_diff > this.blinkInterval) {
                 this.eyesCtl(0);
+            } else {
+                let brightness = Math.min(1023, alert_l * 102);
+                this.blinkG = alert_l * 400;
+                if(this.autoLeftBlinkEnabled)
+                {
+                    this.leftEyeBright(brightness);
+                }
+                if(this.autoRightBlinkEnabled)
+                {
+                    this.rightEyeBright(brightness);
+                }
             }
         } else {
             if (ts_diff > Math.randomRange(100, 250)) {
@@ -797,7 +814,7 @@ class RobotPu {
     }
 
     public showChannel() {
-        // basic.showNumber(this.radioGroupID);
+        basic.showNumber(this.radioGroupID);
     }
 
     public talk(text: string) {
