@@ -1,6 +1,24 @@
 //% color=#e7660b icon="\uf2bd"
 //block="robot PU" blockId="robotPu"
 namespace robotPu {
+    let robot: RobotPu;
+
+    function ensureRobot(): RobotPu {
+        if (!robot) {
+            const sn = "pu-" + control.deviceSerialNumber();
+            robot = new RobotPu(sn, "peu");
+            robot.calibrate();
+            control.inBackground(function () {
+                while (true) {
+                    robot.updateStates();
+                    robot.stateMachine();
+                    basic.pause(5);
+                }
+            });
+        }
+        return robot;
+    }
+    
     
     export enum DistanceUnit {
         //% block="cm"
@@ -88,7 +106,7 @@ namespace robotPu {
     //% leftFoot.defl=0 leftLeg.defl=0 rightFoot.defl=0 rightLeg.defl=0 headOffset.defl=0 headPitch.defl=0
     //% weight=80 blockGap=8
     export function setServoInitialState(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headOffset: number, headPitch: number): void {
- 
+        ensureRobot().setTrim(leftFoot, leftLeg, rightFoot, rightLeg, headOffset, headPitch);
     }
 
     /**
