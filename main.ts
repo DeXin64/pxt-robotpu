@@ -130,8 +130,15 @@ namespace robotPu {
     //% block="ultrasonic sensor distance in %unit"
     //% weight=70 blockGap=8
     export function ultrasonicDistance(unit: DistanceUnit): number {
- 
-        return 0;
+        const robot = ensureRobot();
+        const distanceCm = robot.sonar.distanceCm();
+        
+        if (unit === DistanceUnit.Centimeters) {
+            return distanceCm;
+        } else {
+            // 转换为英寸 (1英寸 ≈ 2.54厘米)
+            return distanceCm / 2.54;
+        }
     }
 
     /**
