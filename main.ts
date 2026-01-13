@@ -196,7 +196,7 @@ namespace robotPu {
         // 切换到手动模式，防止状态机干扰
         robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        
+        robot.lastBlinkTS = control.millis();
         const leftValue = leftEye === EyeState.On ? 1023 : 0;
         const rightValue = rightEye === EyeState.On ? 1023 : 0;
         
