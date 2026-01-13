@@ -749,7 +749,8 @@ class RobotPu {
             [2]: () => this.jump(),
             [3]: () => this.dance(),
             [4]: () => this.kick(),
-            [5]: () => this.joystick()
+            [5]: () => this.joystick(),
+            [6]: () => this.manual()
         };
 
         this.wk.eyesCtl(1);
@@ -981,6 +982,14 @@ class RobotPu {
         // 3. Move to the Fetal State (Index 1)
         // states: [1], sync_list: all servos [0-5], speed: 2.0, async: none, async_sp: 0.5
         this.wk.move(this.pr, [1], [0, 1, 2, 3, 4, 5], 2.0, [], 0.5);
+    }
+
+    /**
+ * Manual servo control mode - does nothing to avoid interfering with user servo commands
+ */
+    public manual(): void {
+        // Do nothing - this state allows direct servo control without interference
+        // from the state machine's automatic movement commands
     }
 
     /**

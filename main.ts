@@ -415,6 +415,9 @@ namespace robotPu {
         const jointIndex = getServoIndex(joint);
         if (jointIndex >= 0) {
             angle = Math.min(180, Math.max(0, Math.floor(angle)));
+            // 切换到手动模式，防止状态机干扰
+            robot.gst = 6; // 6是手动模式的索引
+            robot.lastCmdTS = control.millis(); // 更新命令时间戳
             robot.pr.servoTarget[jointIndex] = angle; // 更新目标位置
             robot.wk.servo(jointIndex, angle); // 直接设置舵机角度
         }
@@ -434,6 +437,9 @@ namespace robotPu {
         // 将关节类型转换为内部索引
         const jointIndex = getServoIndex(joint);
         if (jointIndex >= 0) {
+            // 切换到手动模式，防止状态机干扰
+            robot.gst = 6; // 6是手动模式的索引
+            robot.lastCmdTS = control.millis(); // 更新命令时间戳
             robot.wk.servoStep(angle, step, jointIndex, robot.pr);
         }
     }
