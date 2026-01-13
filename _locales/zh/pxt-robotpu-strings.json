@@ -37,7 +37,7 @@
     "robotPu.setRightEyeBrightness|block": "设置右眼亮度 %brightness",
     "robotPu.executeAction|block": "执行动作 %action",
     "robotPu.setMoveDirection|block": "设置PU机器人移动方向 %direction",
-    "robotPu.setWalkSpeed|block": "设置PU机器人行走速度 %speed 转向 %turn",
+    "robotPu.setWalkSpeed|block": "向 %direction 走 %steps 步",
     "robotPu.talk|block": "说话 %text",
     "robotPu.sing|block": "唱歌 %song",
     "robotPu.setServoAngle|block": "设置%joint 舵机角度为 %angle",

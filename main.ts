@@ -327,42 +327,16 @@ namespace robotPu {
     }
 
     /**
-     * Set robot walk speed and turn. Set the walking speed and turning direction of the PU robot.
+     * Walk a certain number of steps in a specific direction. Make the PU robot walk the specified number of steps in the given direction.
      */
     //% group="Actions"
-    //% block="set walk speed %speed turn %turn"
-    //% speed.min=-100 speed.max=100 speed.defl=0
-    //% turn.defl=TurnDirection.Straight
+    //% block="walk %direction for %steps steps"
+    //% steps.min=1 steps.max=100 steps.defl=5
+    //% direction.defl=MoveDirection.Forward
     //% weight=53 blockGap=8
-    export function setWalkSpeed(speed: number, turn: TurnDirection): void {
+    export function setWalkSpeed(direction: MoveDirection, steps: number): void {
         const robot = ensureRobot();
-        
-        // 将速度从-100~100范围映射到内部速度范围
-        // 前进最大速度为4，后退最大速度为-3
-        let normalizedSpeed = 0;
-        if (speed > 0) {
-            normalizedSpeed = (speed / 100) * robot.fwdSpeed;
-        } else if (speed < 0) {
-            normalizedSpeed = (speed / 100) * Math.abs(robot.bwdSpeed);
-        }
-        
-        robot.walkSpeed = normalizedSpeed;
-        
-        // 设置转向方向
-        switch (turn) {
-            case TurnDirection.Left:
-                robot.walkDirection = -1;
-                break;
-            case TurnDirection.Straight:
-                robot.walkDirection = 0;
-                break;
-            case TurnDirection.Right:
-                robot.walkDirection = 1;
-                break;
-        }
-        
-        // 设置为远程控制状态
-        robot.gst = 5;
+      
     }
 
     /**
