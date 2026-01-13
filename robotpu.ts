@@ -902,7 +902,7 @@ class RobotPu {
             this.alertLevel = 10; // Reset alert level
             // 2-second timeout to return to idle
             if (control.millis() - this.lastCmdTS > this.beaconTimeout) {
-                this.gst = 0;
+                // this.gst = 0;
             }
         }
 
