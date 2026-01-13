@@ -348,7 +348,7 @@ class HCSR04 {
 
 class WK {
     public i2cAddress: number;
-    private lastBlinkTS: number;
+    public lastBlinkTS: number;
     private eyeIsOn: boolean;
     private leftEyeBrightness: number;
     private rightEyeBrightness: number;
