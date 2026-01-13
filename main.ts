@@ -193,7 +193,8 @@ namespace robotPu {
     //% weight=64 blockGap=8
     export function setEyesState(leftEye: EyeState, rightEye: EyeState): void {
         const robot = ensureRobot();
-        
+        robot.gst = 6; // 6是手动模式的索引
+        robot.lastCmdTS = control.millis(); // 更新命令时间戳
         // 眼睛控制：1为开，0为关
         const leftState = leftEye === EyeState.On ? 1 : 0;
         const rightState = rightEye === EyeState.On ? 1 : 0;
