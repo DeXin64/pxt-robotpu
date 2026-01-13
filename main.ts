@@ -263,7 +263,7 @@ namespace robotPu {
     //% weight=55 blockGap=8
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
-        
+        robot.gst = 6; // 6是手动模式的索引
         switch (action) {
             case Action.Greet:
                 // 打招呼动作
@@ -417,7 +417,7 @@ namespace robotPu {
             angle = Math.min(180, Math.max(0, Math.floor(angle)));
             // 切换到手动模式，防止状态机干扰
             robot.gst = 6; // 6是手动模式的索引
-            robot.lastCmdTS = control.millis(); // 更新命令时间戳
+            // robot.lastCmdTS = control.millis(); // 更新命令时间戳
             robot.pr.servoTarget[jointIndex] = angle; // 更新目标位置
             robot.wk.servo(jointIndex, angle); // 直接设置舵机角度
         }
