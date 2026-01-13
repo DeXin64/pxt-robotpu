@@ -264,6 +264,7 @@ namespace robotPu {
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
         robot.gst = 6; // 6是手动模式的索引
+        robot.lastCmdTS = control.millis(); // 更新命令时间戳
         switch (action) {
             case Action.Greet:
                 // 打招呼动作
