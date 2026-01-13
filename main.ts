@@ -325,6 +325,13 @@ namespace robotPu {
         // 设置为远程控制状态
         robot.gst = 5;
     }
+    function doCompletions(run: () => number, completions: number): void {
+        let done = 0
+        while (done < completions) {
+        const rc = run() // 调用传入的函数
+        if (rc == 0) done += 1 // 每次返回 0 时增加完成计数
+        }
+    }
 
     /**
      * Walk a certain number of steps in a specific direction. Make the PU robot walk the specified number of steps in the given direction.
@@ -336,7 +343,26 @@ namespace robotPu {
     //% weight=53 blockGap=8
     export function setWalkSpeed(direction: MoveDirection, steps: number): void {
         const robot = ensureRobot();
-      
+        
+        // 根据方向调用相应的机器人运动方法
+        switch (direction) {
+            case MoveDirection.Forward:
+                // 向前走：正速度，直行
+                doCompletions(() => robotPu.walk(2, 0), steps * 2);
+                break;
+            case MoveDirection.Backward:
+                // 向后走：负速度，直行
+                doCompletions(() => robotPu.walk(-2, 0), steps * 2);
+                break;
+            case MoveDirection.SideLeft:
+                // 向左侧步：负方向
+                doCompletions(() => robotPu.sideStep(-0.2), steps * 2);
+                break;
+            case MoveDirection.SideRight:
+                // 向右侧步：正方向
+                doCompletions(() => robotPu.sideStep(0.2), steps * 2);
+                break;
+        }
     }
 
     /**
