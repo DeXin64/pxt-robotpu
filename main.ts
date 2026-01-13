@@ -194,7 +194,7 @@ namespace robotPu {
     export function setEyesState(leftEye: EyeState, rightEye: EyeState): void {
         const robot = ensureRobot();
         // 禁用自动闪烁功能，防止状态机干扰手动设置
-        robot.wk.setAutoBlinkEnabled(false);
+        // robot.wk.setAutoBlinkEnabled(false);
         robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
         robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
@@ -215,7 +215,7 @@ namespace robotPu {
     //% weight=63 blockGap=8
     export function setLeftEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
-        robot.wk.setAutoBlinkEnabled(false);
+        // robot.wk.setAutoBlinkEnabled(false);
         robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
         robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
@@ -234,7 +234,7 @@ namespace robotPu {
     //% weight=62 blockGap=8
     export function setRightEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
-        robot.wk.setAutoBlinkEnabled(false);
+        // robot.wk.setAutoBlinkEnabled(false);
         robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
         robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
