@@ -197,6 +197,7 @@ namespace robotPu {
         robot.wk.setAutoBlinkEnabled(false);
         robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
        
         const leftValue = leftEye === EyeState.On ? 1023 : 0;
         const rightValue = rightEye === EyeState.On ? 1023 : 0;
@@ -217,6 +218,7 @@ namespace robotPu {
         robot.wk.setAutoBlinkEnabled(false);
         robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
        
         // 将0-100的亮度范围转换为0-1023的PWM值
         const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
@@ -233,6 +235,9 @@ namespace robotPu {
     export function setRightEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
         robot.wk.setAutoBlinkEnabled(false);
+        robot.gst = 6; // 6是手动模式的索引
+        robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
         
         // 将0-100的亮度范围转换为0-1023的PWM值
         const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
