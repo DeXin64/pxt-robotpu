@@ -348,19 +348,19 @@ namespace robotPu {
         switch (direction) {
             case MoveDirection.Forward:
                 // 向前走：正速度，直行
-                doCompletions(() => robotPu.walk(2, 0), steps * 2);
+                doCompletions(() => robot.walk(2, 0), steps * 2);
                 break;
             case MoveDirection.Backward:
                 // 向后走：负速度，直行
-                doCompletions(() => robotPu.walk(-2, 0), steps * 2);
+                doCompletions(() => robot.walk(-2, 0), steps * 2);
                 break;
             case MoveDirection.SideLeft:
                 // 向左侧步：负方向
-                doCompletions(() => robotPu.sideStep(-0.2), steps * 2);
+                doCompletions(() => robot.sideStep(-0.2), steps * 2);
                 break;
             case MoveDirection.SideRight:
                 // 向右侧步：正方向
-                doCompletions(() => robotPu.sideStep(0.2), steps * 2);
+                doCompletions(() => robot.sideStep(0.2), steps * 2);
                 break;
         }
     }
