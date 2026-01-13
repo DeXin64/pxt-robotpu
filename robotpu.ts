@@ -490,15 +490,9 @@ class WK {
      * Eyes ON/OFF control.
      */
     public eyesCtl(c: number): void {
-        if(this.autoLeftBlinkEnabled)
-        {
-            pins.digitalWritePin(DigitalPin.P12, c);//left eye
-        }
-   
-        if(this.autoRightBlinkEnabled)
-        {
-            pins.digitalWritePin(DigitalPin.P13, c);//right eye
-        }
+        // 直接控制左右眼睛，不经过任何判断
+        pins.digitalWritePin(DigitalPin.P12, c);//left eye
+        pins.digitalWritePin(DigitalPin.P13, c);//right eye
         this.eyeIsOn = (c == 1);
         this.lastBlinkTS = control.millis();
     }
@@ -507,10 +501,7 @@ class WK {
      * Left eye brightness (0-1023).
      */
     public leftEyeBright(b: number): void {
-          // 只有在自动左闪烁启用时才执行闪烁逻辑
-        if (!this.autoLeftBlinkEnabled) {
-            return;
-        }
+        // 直接控制左眼睛亮度，不经过任何判断
         pins.analogWritePin(AnalogPin.P12, b);
         this.leftEyeBrightness = b;
     }
@@ -519,10 +510,7 @@ class WK {
      * Right eye brightness (0-1023).
      */
     public rightEyeBright(b: number): void {
-          // 只有在自动右闪烁启用时才执行闪烁逻辑
-        if (!this.autoRightBlinkEnabled) {
-            return;
-        }
+        // 直接控制右眼睛亮度，不经过任何判断
         pins.analogWritePin(AnalogPin.P13, b);
         this.rightEyeBrightness = b;
     }
