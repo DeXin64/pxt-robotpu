@@ -978,7 +978,7 @@ class RobotPu {
     public manual(): void {
         // 自动更新命令时间戳，防止手动模式下超时
         this.lastCmdTS = control.millis();
-        this.lastBlinkTS = control.millis();
+        // this.lastBlinkTS = control.millis();
         // Do nothing else - this state allows direct servo control without interference
         // from the state machine's automatic movement commands
     }

@@ -193,10 +193,9 @@ namespace robotPu {
     //% weight=64 blockGap=8
     export function setEyesState(leftEye: EyeState, rightEye: EyeState): void {
         const robot = ensureRobot();
-        // 切换到手动模式，防止状态机干扰
-        robot.gst = 6; // 6是手动模式的索引
-        robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        robot.lastBlinkTS = control.millis();
+        // 禁用自动闪烁功能，防止状态机干扰手动设置
+        robot.wk.setAutoBlinkEnabled(false);
+        
         const leftValue = leftEye === EyeState.On ? 1023 : 0;
         const rightValue = rightEye === EyeState.On ? 1023 : 0;
         
