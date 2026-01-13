@@ -803,7 +803,7 @@ class RobotPu {
     }
 
     public showChannel() {
-        basic.showNumber(this.radioGroupID);
+        // basic.showNumber(this.radioGroupID);
     }
 
     public talk(text: string) {
