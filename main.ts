@@ -302,39 +302,30 @@ namespace robotPu {
     export function setMoveDirection(direction: MoveDirection): void {
         const robot = ensureRobot();
         
-        // 切换到手动模式，防止状态机干扰
-        robot.gst = 6; // 6是手动模式的索引
+        // 设置移动方向和速度
+        switch (direction) {
+            case MoveDirection.Forward:
+                robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
+                robot.walkDirection = 0; // 直行
+                break;
+            case MoveDirection.Backward:
+                robot.walkSpeed = robot.bwdSpeed; // 使用后退最大速度
+                robot.walkDirection = 0; // 直行
+                break;
+            case MoveDirection.SideLeft:
+                robot.walkSpeed = 0; // 停止前进/后退
+                robot.walkDirection = -1; // 左侧移
+                break;
+            case MoveDirection.SideRight:
+                robot.walkSpeed = 0; // 停止前进/后退
+                robot.walkDirection = 1; // 右侧移
+                break;
+        }
         
-        // 在后台持续执行指定方向的动作
-        control.inBackground(function () {
-            while (true) {
-                // 更新命令时间戳，防止超时
-                robot.lastCmdTS = control.millis();
-                
-                // 根据方向直接执行相应的机器人运动方法
-                switch (direction) {
-                    case MoveDirection.Forward:
-                        // 向前走：使用配置的前进最大速度，直行
-                        robot.walk(robot.fwdSpeed, 0);
-                        break;
-                    case MoveDirection.Backward:
-                        // 向后走：使用配置的后退最大速度，直行
-                        robot.walk(robot.bwdSpeed, 0);
-                        break;
-                    case MoveDirection.SideLeft:
-                        // 向左侧步：负方向，使用配置的速度
-                        robot.sideStep(-1);
-                        break;
-                    case MoveDirection.SideRight:
-                        // 向右侧步：正方向，使用配置的速度
-                        robot.sideStep(1);
-                        break;
-                }
-                
-                // 短暂延迟，控制更新频率
-                control.waitMicros(50000); // 50ms
-            }
-        });
+        // 设置为远程控制状态
+        robot.gst = 5;
+        // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
+        robot.lastCmdTS = control.millis();
     }
 
     function doCompletions(run: () => number, completions: number): void {
