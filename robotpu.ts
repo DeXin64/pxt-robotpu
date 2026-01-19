@@ -697,12 +697,6 @@ class RobotPu {
     // beacon timeout
     public beaconTimeout: number = 2000;
 
-    // 添加特定函数执行标志位和上一次执行的MoveDirection
-    public specificFunctionExecuted: boolean = false;
-    public lastMoveDirection: number = 0;
-    
-    
-
     constructor(sn: string, name: string = "peu") {
         // Initialize Core Components inside constructor
         this.pr = new Parameters();
