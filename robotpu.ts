@@ -738,7 +738,8 @@ class RobotPu {
             [3]: () => this.dance(),
             [4]: () => this.kick(),
             [5]: () => this.joystick(),
-            [6]: () => this.manual()
+            [6]: () => this.manual(),
+            [7]: () => this.continuousMove()
         };
 
         this.wk.eyesCtl(1);
@@ -750,6 +751,30 @@ class RobotPu {
  * Ported from joystick() in Python.
  */
     public joystick(): number {
+        // 1. If speed is near zero, handle stationary behavior
+        if (Math.abs(this.walkSpeed) < 0.1) {
+            // Smoothly move the head/body to match bias values
+            // Servo 4 is waist/roll, Servo 5 is head/pitch
+            this.wk.servoStep(90 + this.headYawBias, 1, 4, this.pr);
+            this.wk.servoStep(90 + this.headPitchBias, 1, 5, this.pr);
+
+            // 2. If the turn stick is pushed far left/right while standing, side-step
+            if (Math.abs(this.walkDirection) > 0.9) {
+                return this.sideStep(this.walkDirection);
+            }
+
+            // Otherwise, stay in idle stance
+            return this.rest();
+        } else {
+            // 3. If there is speed, perform the balanced walk
+            return this.walk(this.walkSpeed, this.walkDirection);
+        }
+    }
+    
+    /**
+     * Handles continuous movement behavior. Similar to joystick but updates lastCmdTS continuously.
+     */
+    public continuousMove(): number {
         // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
         this.lastCmdTS = control.millis();
         // 1. If speed is near zero, handle stationary behavior

@@ -322,8 +322,8 @@ namespace robotPu {
                 break;
         }
         
-        // 设置为远程控制状态
-        robot.gst = 5;
+        // 设置为持续移动状态
+        robot.gst = 7;
         // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
         robot.lastCmdTS = control.millis();
     }
