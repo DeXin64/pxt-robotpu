@@ -633,6 +633,10 @@ class RobotPu {
     private alertLevel: number = 10;
     private alertScale: number = 0.9;
     private restState: number = 26;
+    
+    // Background movement task control
+    private isMovementRunning: boolean = false; // 标记是否有运动任务在运行
+    private currentMoveDirection: number = 0; // 存储当前运动方向，使用数字类型避免命名空间依赖
 
     // IMU & Balance
     private bodyPitch: number = 0;
