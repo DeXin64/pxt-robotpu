@@ -925,7 +925,7 @@ class RobotPu {
                 // 重置WK状态
                 this.wk.pos = 0;
                 this.wk.numSteps = 0;
-                this.wk.idle = false;
+                // idle属性会通过isServoIdle方法自动更新，不需要手动重置
                 this.gst = 0;
             }
         }
@@ -1324,7 +1324,7 @@ class RobotPu {
             // State has changed, reset WK state variables
             this.wk.pos = 0;
             this.wk.numSteps = 0;
-            this.wk.idle = false;
+            // idle属性会通过isServoIdle方法自动更新，不需要手动重置
             // 更新前一个状态
             this.prevGst = this.gst;
         }
