@@ -332,7 +332,7 @@ namespace robotPu {
                 }
                 
                 // 短暂延迟，控制更新频率
-                control.waitMicros(5000); 
+                control.waitMicros(50000); 
             }
         });
     }
