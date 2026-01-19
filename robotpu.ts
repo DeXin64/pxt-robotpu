@@ -750,6 +750,8 @@ class RobotPu {
  * Ported from joystick() in Python.
  */
     public joystick(): number {
+        // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
+        this.lastCmdTS = control.millis();
         // 1. If speed is near zero, handle stationary behavior
         if (Math.abs(this.walkSpeed) < 0.1) {
             // Smoothly move the head/body to match bias values
