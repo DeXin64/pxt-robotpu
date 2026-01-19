@@ -830,6 +830,27 @@ class RobotPu {
             movementSpeed
         );
     }
+    
+    /**
+     * Executes an in-place turning movement. One foot remains stationary while the other moves.
+     * @param di Directional bias: positive for right turn, negative for left turn.
+     */
+    public turnInPlace(di: number): number {
+        // 1. Use the same gait states as walking, but with different control parameters
+        // 对于原地旋转，我们可以使用前进或后退的状态序列，但调整控制向量
+        let sts = this.pr.walkFwdStates;
+        
+        // 2. Reset the Control Vector to neutral first
+        this.setCt([0, 1, 2, 3, 4, 5], [0, 0, 0, 0, 0, 0]);
+        
+        // 3. Calculate movement speed for turning (slower than normal walking)
+        let movementSpeed = Math.abs(di) * this.fwdSpeed * 0.5;
+        
+        // 4. Execute the movement via the WK engine with adjusted control
+        // 通过调整方向参数di，实现一只脚不动，另一只脚运动的原地旋转效果
+        // 我们使用现有的moveBalance方法，它会根据di参数调整左右脚的运动
+        return this.moveBalance(movementSpeed, di * 2, this.pr.walkFwdStates, this.pr.walkBwdStates);
+    }
 
     public showChannel() {
         // basic.showNumber(this.radioGroupID);

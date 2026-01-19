@@ -19,6 +19,8 @@
     "robotPu.MoveDirection.Backward|block": "向后行走",
     "robotPu.MoveDirection.SideLeft|block": "向左侧移",
     "robotPu.MoveDirection.SideRight|block": "向右侧移",
+    "robotPu.MoveDirection.LeftTurn|block": "原地左转",
+    "robotPu.MoveDirection.RightTurn|block": "原地右转",
     "robotPu.TurnDirection.Left|block": "左转",
     "robotPu.TurnDirection.Straight|block": "直行",
     "robotPu.TurnDirection.Right|block": "右转",

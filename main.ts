@@ -72,7 +72,11 @@ namespace robotPu {
         //% block="side left"
         SideLeft,
         //% block="side right"
-        SideRight
+        SideRight,
+        //% block="left turn"
+        LeftTurn,
+        //% block="right turn"
+        RightTurn
     }
 
     export enum TurnDirection {
@@ -319,6 +323,14 @@ namespace robotPu {
             case MoveDirection.SideRight:
                 robot.walkSpeed = 0; // 停止前进/后退
                 robot.walkDirection = 1; // 右侧移
+                break;
+            case MoveDirection.LeftTurn:
+                robot.walkSpeed = robot.fwdSpeed * 0.5; // 使用较慢的速度
+                robot.walkDirection = -1; // 左转向
+                break;
+            case MoveDirection.RightTurn:
+                robot.walkSpeed = robot.fwdSpeed * 0.5; // 使用较慢的速度
+                robot.walkDirection = 1; // 右转向
                 break;
         }
         
