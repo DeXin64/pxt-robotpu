@@ -334,19 +334,6 @@ namespace robotPu {
     }
 
     /**
-     * Walk a certain number of steps in a specific direction. Make the PU robot walk the specified number of steps in the given direction.
-     */
-    //% group="Actions"
-    //% block="walk %direction for %steps steps"
-    //% steps.min=1 steps.max=100 steps.defl=5
-    //% direction.defl=MoveDirection.Forward
-    //% weight=53 blockGap=8
-    export function setWalkSpeed(direction: MoveDirection, steps: number): void {
-        // 调用带速度参数的版本，使用默认速度2
-        setWalkSpeed(direction, steps, 2);
-    }
-
-    /**
      * Walk a certain number of steps in a specific direction at a custom speed. Make the PU robot walk the specified number of steps in the given direction with the specified speed.
      */
     //% group="Actions"
