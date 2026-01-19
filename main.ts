@@ -342,13 +342,30 @@ namespace robotPu {
     //% direction.defl=MoveDirection.Forward
     //% weight=53 blockGap=8
     export function setWalkSpeed(direction: MoveDirection, steps: number): void {
+        // 调用带速度参数的版本，使用默认速度2
+        setWalkSpeed(direction, steps, 2);
+    }
+
+    /**
+     * Walk a certain number of steps in a specific direction at a custom speed. Make the PU robot walk the specified number of steps in the given direction with the specified speed.
+     */
+    //% group="Actions"
+    //% block="walk %direction for %steps steps at speed %speed"
+    //% steps.min=1 steps.max=100 steps.defl=5
+    //% speed.min=1 speed.max=10 speed.defl=2
+    //% direction.defl=MoveDirection.Forward
+    //% weight=53 blockGap=8
+    export function setWalkSpeed(direction: MoveDirection, steps: number, speed: number): void {
         const robot = ensureRobot();
+        
+        // 确保速度在合理范围内
+        speed = Math.min(10, Math.max(1, Math.floor(speed)));
         
         // 根据方向调用相应的机器人运动方法
         switch (direction) {
             case MoveDirection.Forward:
-                // 向前走：正速度，直行
-                doCompletions(() => robot.walk(2, 0), steps * 2);
+                // 向前走：使用用户提供的速度，直行
+                doCompletions(() => robot.walk(speed, 0), steps * 2);
                 break;
             case MoveDirection.Backward:
                 // 向后走：负速度，直行
