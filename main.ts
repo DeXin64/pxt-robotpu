@@ -302,18 +302,12 @@ namespace robotPu {
     export function setMoveDirection(direction: MoveDirection): void {
         const robot = ensureRobot();
         let currentMoveDirection = direction;
-        if (robot.lastMoveDirection == currentMoveDirection) 
-        {
-            return; // 如果当前方向与上次相同，则不执行任何操作
-        }
-
-        robot.specificFunctionExecuted = true;
+        
         // 设置移动方向和速度
         switch (currentMoveDirection) {
             case MoveDirection.Forward:
                 robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
                 robot.walkDirection = 0; // 直行
-
                 break;
             case MoveDirection.Backward:
                 robot.walkSpeed = robot.bwdSpeed; // 使用后退最大速度
@@ -327,24 +321,20 @@ namespace robotPu {
                 robot.walkSpeed = 0; // 停止前进/后退
                 robot.walkDirection = 1; // 右侧移
                 break;
-            }
+        }
+        
         robot.lastMoveDirection = currentMoveDirection;
-    
-    
+        
         // 设置为远程控制状态
         robot.gst = 5;
-        // // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
-        // robot.lastCmdTS = control.millis();
-        // 创建一个后台任务，持续更新lastCmdTS
-
+        
+        // 创建一个后台任务，持续更新lastCmdTS，确保持续执行当前指令
         control.runInBackground(() => {
-            while (robot.specificFunctionExecuted === true) {
-                robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
-                robot.walkDirection = 0; // 直行
+            while (true) {
                 robot.lastCmdTS = control.millis();
+                basic.pause(50); // 每50ms更新一次，确保机器人不会进入空闲状态
             }
         });
-   
     }
 
     function doCompletions(run: () => number, completions: number): void {
