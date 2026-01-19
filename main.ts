@@ -322,6 +322,10 @@ namespace robotPu {
                 break;
         }
         
+        // 记录当前移动方向和时间
+        robot.lastMoveDirection = direction;
+        robot.lastMoveTime = control.millis();
+        
         // 设置为远程控制状态
         robot.gst = 5;
         // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
@@ -346,6 +350,13 @@ namespace robotPu {
     //% weight=53 blockGap=8
     export function setWalkSpeed(direction: MoveDirection, steps: number): void {
         const robot = ensureRobot();
+        
+        // 判断方向是否改变
+        if (robot.lastMoveDirection !== direction) {
+            // 方向改变，更新记录
+            robot.lastMoveDirection = direction;
+            robot.lastMoveTime = control.millis();
+        }
         
         // 根据方向调用相应的机器人运动方法
         switch (direction) {

@@ -624,6 +624,8 @@ class RobotPu {
 
     // Movement & State
     public lastCmdTS: number;
+    public lastMoveDirection: number = -1; // -1 means no direction set
+    public lastMoveTime: number = 0;
     public fwdSpeed: number = 4;
     public bwdSpeed: number = -3;
     public walkSpeed: number = 0;
