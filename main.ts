@@ -322,7 +322,7 @@ namespace robotPu {
                 break;
         }
         
-        // 设置为持续移动状态
+        // 重置WK状态，确保新的移动命令从正确的初始状态开始执行
         robot.gst = 7;
         // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
         robot.lastCmdTS = control.millis();

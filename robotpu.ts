@@ -617,22 +617,23 @@ class RobotPu {
     public content: Content;
     public music: MusicLib;
 
-    // Basic identification
-    public name: string;
-    public sn: string;
-    public gst: number;
+    // 基本 identification
+        public name: string;
+        public sn: string;
+        public gst: number;
+        private prevGst: number; // 用于检测状态变化
 
-    // Movement & State
-    public lastCmdTS: number;
-    public fwdSpeed: number = 4;
-    public bwdSpeed: number = -3;
-    public walkSpeed: number = 0;
-    public walkDirection: number = 0;
-    private headPitchBias: number = 0;
-    private headYawBias: number = 0;
-    private alertLevel: number = 10;
-    private alertScale: number = 0.9;
-    private restState: number = 26;
+        // Movement & State
+        public lastCmdTS: number;
+        public fwdSpeed: number = 4;
+        public bwdSpeed: number = -3;
+        public walkSpeed: number = 0;
+        public walkDirection: number = 0;
+        private headPitchBias: number = 0;
+        private headYawBias: number = 0;
+        private alertLevel: number = 10;
+        private alertScale: number = 0.9;
+        private restState: number = 26;
 
     // IMU & Balance
     private bodyPitch: number = 0;
@@ -705,6 +706,7 @@ class RobotPu {
         this.sn = sn;
         this.name = name;
         this.gst = 0;
+        this.prevGst = 0;
         this.lastCmdTS = control.millis();
 
         // Hardware Setup
@@ -920,6 +922,10 @@ class RobotPu {
                 // 状态超时，切换到空闲状态前清理移动状态
                 this.walkSpeed = 0;
                 this.walkDirection = 0;
+                // 重置WK状态
+                this.wk.pos = 0;
+                this.wk.numSteps = 0;
+                this.wk.idle = false;
                 this.gst = 0;
             }
         }
@@ -1313,7 +1319,17 @@ class RobotPu {
      * Processes the current state (gst) and executes the corresponding behavior.
      */
     public stateMachine(): void {
-        // 1. Execute the current state's behavior
+        // 1. Check if state has changed
+        if (this.gst !== this.prevGst) {
+            // State has changed, reset WK state variables
+            this.wk.pos = 0;
+            this.wk.numSteps = 0;
+            this.wk.idle = false;
+            // 更新前一个状态
+            this.prevGst = this.gst;
+        }
+
+        // 2. Execute the current state's behavior
         // Python: self.stateFuncDict.get(self.gst, self.sleep)()
         let behavior = this.stateFuncDict[this.gst];
 
@@ -1324,7 +1340,7 @@ class RobotPu {
             this.sleepMode();
         }
 
-        // 2. Handle blinking and state tracking
+        // 3. Handle blinking and state tracking
         if (this.gst >= 0) {
             // Update eye blink animation based on alert level (alertLevel)
             this.wk.blink(this.alertLevel);
