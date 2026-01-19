@@ -114,8 +114,8 @@ namespace robotPu {
      */
     //% group="Setup"
     //% block="set walk speed range forward %forward backward %backward"
-    //% forward.min=0 forward.max=4 forward.defl=4
-    //% backward.min=0 backward.max=3 backward.defl=3
+    //% forward.min=0 forward.max=4 forward.defl=2
+    //% backward.min=0 backward.max=3 backward.defl=2
     //% weight=79 blockGap=8
     export function setWalkSpeedRange(forward: number, backward: number): void {
         const robot = ensureRobot();
@@ -334,37 +334,33 @@ namespace robotPu {
     }
 
     /**
-     * Walk a certain number of steps in a specific direction at a custom speed. Make the PU robot walk the specified number of steps in the given direction with the specified speed.
+     * Walk a certain number of steps in a specific direction. Make the PU robot walk the specified number of steps in the given direction using the configured speed.
      */
     //% group="Actions"
-    //% block="walk %direction for %steps steps at speed %speed"
+    //% block="walk %direction for %steps steps"
     //% steps.min=1 steps.max=100 steps.defl=5
-    //% speed.min=1 speed.max=10 speed.defl=2
     //% direction.defl=MoveDirection.Forward
     //% weight=53 blockGap=8
-    export function setWalkSpeed(direction: MoveDirection, steps: number, speed: number): void {
+    export function setWalkSpeed(direction: MoveDirection, steps: number): void {
         const robot = ensureRobot();
-        
-        // 确保速度在合理范围内
-        speed = Math.min(10, Math.max(1, Math.floor(speed)));
         
         // 根据方向调用相应的机器人运动方法
         switch (direction) {
             case MoveDirection.Forward:
-                // 向前走：使用用户提供的速度，直行
-                doCompletions(() => robot.walk(speed, 0), steps * 2);
+                // 向前走：使用配置的前进最大速度，直行
+                doCompletions(() => robot.walk(robot.fwdSpeed, 0), steps * 2);
                 break;
             case MoveDirection.Backward:
-                // 向后走：负速度，直行
-                doCompletions(() => robot.walk(-speed, 0), steps * 2);
+                // 向后走：使用配置的后退最大速度，直行
+                doCompletions(() => robot.walk(robot.bwdSpeed, 0), steps * 2);
                 break;
             case MoveDirection.SideLeft:
-                // 向左侧步：负方向
-                doCompletions(() => robot.sideStep(-speed/10), steps * 2);
+                // 向左侧步：负方向，使用配置的速度
+                doCompletions(() => robot.sideStep(-0.2), steps * 2);
                 break;
             case MoveDirection.SideRight:
-                // 向右侧步：正方向
-                doCompletions(() => robot.sideStep(speed/10), steps * 2);
+                // 向右侧步：正方向，使用配置的速度
+                doCompletions(() => robot.sideStep(0.2), steps * 2);
                 break;
         }
     }
