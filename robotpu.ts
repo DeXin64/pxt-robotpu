@@ -917,6 +917,9 @@ class RobotPu {
             this.alertLevel = 10; // Reset alert level
             // 2-second timeout to return to idle
             if (control.millis() - this.lastCmdTS > this.beaconTimeout) {
+                // 状态超时，切换到空闲状态前清理移动状态
+                this.walkSpeed = 0;
+                this.walkDirection = 0;
                 this.gst = 0;
             }
         }
@@ -945,6 +948,9 @@ class RobotPu {
 
     // Behavior States
     private idle() {
+        // 清理移动状态，确保空闲状态下不会继续执行移动命令
+        this.walkSpeed = 0;
+        this.walkDirection = 0;
         if (Math.randomRange(0, 100) == 0) this.alertLevel *= this.alertScale;
         this.rest();
     }
@@ -1003,6 +1009,9 @@ class RobotPu {
  * Manual servo control mode - does nothing to avoid interfering with user servo commands
  */
     public manual(): void {
+        // 清除移动状态，防止后续状态切换时继续执行移动命令
+        this.walkSpeed = 0;
+        this.walkDirection = 0;
         // 自动更新命令时间戳，防止手动模式下超时
         this.lastCmdTS = control.millis();
         this.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
