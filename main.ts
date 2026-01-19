@@ -302,65 +302,30 @@ namespace robotPu {
     export function setMoveDirection(direction: MoveDirection): void {
         const robot = ensureRobot();
         
-        // 更新当前运动方向（使用数字类型存储）
-        (robot as any).currentMoveDirection = direction;
-        
-        // 设置移动参数（用于状态机）
+        // 设置移动方向和速度
         switch (direction) {
             case MoveDirection.Forward:
-                robot.walkSpeed = robot.fwdSpeed;
-                robot.walkDirection = 0;
+                robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
+                robot.walkDirection = 0; // 直行
                 break;
             case MoveDirection.Backward:
-                robot.walkSpeed = robot.bwdSpeed;
-                robot.walkDirection = 0;
+                robot.walkSpeed = robot.bwdSpeed; // 使用后退最大速度
+                robot.walkDirection = 0; // 直行
                 break;
             case MoveDirection.SideLeft:
-                robot.walkSpeed = 0;
-                robot.walkDirection = -1;
+                robot.walkSpeed = 0; // 停止前进/后退
+                robot.walkDirection = -1; // 左侧移
                 break;
             case MoveDirection.SideRight:
-                robot.walkSpeed = 0;
-                robot.walkDirection = 1;
+                robot.walkSpeed = 0; // 停止前进/后退
+                robot.walkDirection = 1; // 右侧移
                 break;
         }
         
         // 设置为远程控制状态
         robot.gst = 5;
-        
-        // 如果后台运动任务还没有运行，则启动它
-        if (!(robot as any).isMovementRunning) {
-            (robot as any).isMovementRunning = true;
-            
-            control.inBackground(function () {
-                while ((robot as any).isMovementRunning) {
-                    // 更新命令时间戳，防止超时
-                    robot.lastCmdTS = control.millis();
-                    
-                    // 获取当前运动方向
-                    const currentDirection = (robot as any).currentMoveDirection;
-                    
-                    // 根据当前方向直接执行相应的机器人运动方法
-                    switch (currentDirection) {
-                        case 0: // MoveDirection.Forward
-                            robot.walk(robot.fwdSpeed, 0);
-                            break;
-                        case 1: // MoveDirection.Backward
-                            robot.walk(robot.bwdSpeed, 0);
-                            break;
-                        case 2: // MoveDirection.SideLeft
-                            robot.sideStep(-1);
-                            break;
-                        case 3: // MoveDirection.SideRight
-                            robot.sideStep(1);
-                            break;
-                    }
-                    
-                    // 短暂延迟，控制更新频率
-                    control.waitMicros(50000); // 50ms
-                }
-            });
-        }
+        // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
+        robot.lastCmdTS = control.millis();
     }
 
     function doCompletions(run: () => number, completions: number): void {
