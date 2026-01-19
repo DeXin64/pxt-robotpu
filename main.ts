@@ -2,6 +2,8 @@
 //block="robot PU" blockId="robotPu"
 namespace robotPu {
     let robot: RobotPu;
+    // 跟踪当前执行的方向，用于状态指示
+    let currentDirection: MoveDirection = MoveDirection.Forward;
 
     function ensureRobot(): RobotPu {
         if (!robot) {
@@ -302,30 +304,97 @@ namespace robotPu {
     export function setMoveDirection(direction: MoveDirection): void {
         const robot = ensureRobot();
         
-        // 设置移动方向和速度
+        // 计算新的目标速度和方向
+        let targetWalkSpeed = 0;
+        let targetWalkDirection = 0;
+        
         switch (direction) {
             case MoveDirection.Forward:
-                robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
-                robot.walkDirection = 0; // 直行
+                targetWalkSpeed = robot.fwdSpeed; // 使用前进最大速度
+                targetWalkDirection = 0; // 直行
                 break;
             case MoveDirection.Backward:
-                robot.walkSpeed = robot.bwdSpeed; // 使用后退最大速度
-                robot.walkDirection = 0; // 直行
+                targetWalkSpeed = robot.bwdSpeed; // 使用后退最大速度
+                targetWalkDirection = 0; // 直行
                 break;
             case MoveDirection.SideLeft:
-                robot.walkSpeed = 0; // 停止前进/后退
-                robot.walkDirection = -1; // 左侧移
+                targetWalkSpeed = 0; // 停止前进/后退
+                targetWalkDirection = -1; // 左侧移
                 break;
             case MoveDirection.SideRight:
-                robot.walkSpeed = 0; // 停止前进/后退
-                robot.walkDirection = 1; // 右侧移
+                targetWalkSpeed = 0; // 停止前进/后退
+                targetWalkDirection = 1; // 右侧移
                 break;
         }
+        
+        // 如果当前状态与目标状态相同，直接返回
+        if (robot.walkSpeed === targetWalkSpeed && robot.walkDirection === targetWalkDirection) {
+            return;
+        }
+        
+        // 平滑切换：使用控制循环逐渐调整速度和方向
+        control.inBackground(function () {
+            // 先减速到0（如果当前有速度）
+            while (Math.abs(robot.walkSpeed) > 0.1) {
+                robot.walkSpeed *= 0.9; // 每次减少10%
+                robot.walkDirection *= 0.9;
+                basic.pause(10);
+            }
+            
+            // 完全停止
+            robot.walkSpeed = 0;
+            robot.walkDirection = 0;
+            basic.pause(50);
+            
+            // 加速到目标速度和方向
+            let currentSpeed = 0;
+            let currentDirectionValue = 0;
+            
+            while (Math.abs(currentSpeed - targetWalkSpeed) > 0.1 || Math.abs(currentDirectionValue - targetWalkDirection) > 0.1) {
+                // 逐渐接近目标值
+                currentSpeed += (targetWalkSpeed - currentSpeed) * 0.2;
+                currentDirectionValue += (targetWalkDirection - currentDirectionValue) * 0.2;
+                
+                // 更新机器人的运动参数
+                robot.walkSpeed = currentSpeed;
+                robot.walkDirection = currentDirectionValue;
+                
+                basic.pause(10);
+            }
+            
+            // 精确设置为目标值
+            robot.walkSpeed = targetWalkSpeed;
+            robot.walkDirection = targetWalkDirection;
+        });
+        
+        // 更新当前方向状态，用于状态指示
+        currentDirection = direction;
         
         // 设置为远程控制状态
         robot.gst = 5;
         // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
         robot.lastCmdTS = control.millis();
+    }
+    
+    /**
+     * Get the current movement direction of the robot.
+     */
+    //% group="Status"
+    //% block="current movement direction"
+    //% weight=10 blockGap=8
+    export function getCurrentDirection(): MoveDirection {
+        return currentDirection;
+    }
+    
+    /**
+     * Check if the robot is currently moving.
+     */
+    //% group="Status"
+    //% block="is robot moving"
+    //% weight=9 blockGap=8
+    export function isRobotMoving(): boolean {
+        const robot = ensureRobot();
+        return Math.abs(robot.walkSpeed) > 0.1 || Math.abs(robot.walkDirection) > 0.1;
     }
 
     function doCompletions(run: () => number, completions: number): void {
