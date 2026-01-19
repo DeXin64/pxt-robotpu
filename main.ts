@@ -394,7 +394,7 @@ namespace robotPu {
     /**
      * Set servo angle. Directly rotate the specified servo to the target angle.
      */
-    //% group="Actuators"
+    //% group="Actions"
     //% block="set %joint servo to %angle"
     //% angle.min=0 angle.max=180 angle.defl=90
     //% weight=65 blockGap=8
@@ -416,7 +416,7 @@ namespace robotPu {
     /**
      * Smooth set servo angle. Smoothly rotate the specified servo to the target angle with the specified step length.
      */
-    //% group="Actuators"
+    //% group="Actions"
     //% block="smooth move %joint servo to %angle with step %step"
     //% angle.min=0 angle.max=180 angle.defl=90
     //% step.min=1 step.max=20 step.defl=2
