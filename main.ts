@@ -323,16 +323,16 @@ namespace robotPu {
                         break;
                     case MoveDirection.SideLeft:
                         // 向左侧步：负方向，使用配置的速度
-                        robot.sideStep(-1);
+                        robot.sideStep(-0.2);
                         break;
                     case MoveDirection.SideRight:
                         // 向右侧步：正方向，使用配置的速度
-                        robot.sideStep(1);
+                        robot.sideStep(0.2);
                         break;
                 }
                 
                 // 短暂延迟，控制更新频率
-                control.waitMicros(50000); // 50ms
+                // control.waitMicros(50000); // 50ms
             }
         });
     }
