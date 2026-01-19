@@ -426,12 +426,22 @@ namespace robotPu {
         
         // 将关节类型转换为内部索引
         const jointIndex = getServoIndex(joint);
-        if (jointIndex >= 0) {
-            // 切换到手动模式，防止状态机干扰
-            robot.gst = 6; // 6是手动模式的索引
-            robot.lastCmdTS = control.millis(); // 更新命令时间戳
-            robot.wk.servoStep(angle, step, jointIndex, robot.pr);
-        }
+        // 切换到手动模式，防止状态机干扰
+        robot.gst = 6; // 6是手动模式的索引
+        robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        
+        // 使用控制循环持续调用servoStep直到到达目标角度
+        control.inBackground(function () {
+            while (true) {
+                robot.wk.servoStep(angle, step, jointIndex, robot.pr);
+                // 检查是否已经到达目标角度
+                if (Math.abs(angle - robot.pr.servoTarget[jointIndex]) <= step) {
+                    break;
+                }
+                // 短暂延迟，控制更新频率
+                control.waitMicros(50000); // 50ms
+            }
+        });
     }
 
     /**
