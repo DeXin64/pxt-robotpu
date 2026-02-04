@@ -2,8 +2,8 @@
 //block="robot PU" blockId="robotPu"
 namespace robotPu {
     let robot: RobotPu;
-    let repeatActionTimer: number;
     let currentAction: Action | null = null;
+    let lastActionTimestamp: number = 0;
 
     function ensureRobot(): RobotPu {
         if (!robot) {
@@ -14,6 +14,17 @@ namespace robotPu {
                 while (true) {
                     robot.updateStates();
                     robot.stateMachine();
+                    
+                    // 检查是否需要重复执行动作
+                    if (currentAction !== null) {
+                        const interval = actionIntervals[currentAction] || 1000;
+                        const currentTime = control.millis();
+                        if (interval > 0 && currentTime - lastActionTimestamp > interval) {
+                            executeSingleAction(currentAction);
+                            lastActionTimestamp = currentTime;
+                        }
+                    }
+                    
                     basic.pause(5);
                 }
             });
@@ -271,27 +282,12 @@ namespace robotPu {
         const robot = ensureRobot();
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
         
-        // 停止之前的重复执行
-        if (repeatActionTimer) {
-            control.clearInterval(repeatActionTimer);
-        }
-        
         // 执行一次动作
         executeSingleAction(action);
         
-        // 获取动作的间隔时间
-        const interval = actionIntervals[action] || 1000;
-        
-        // 对于需要重复执行的动作，设置重复执行
-        if (interval > 0) {
-            currentAction = action;
-            repeatActionTimer = control.setInterval(function () {
-                executeSingleAction(action);
-            }, interval);
-        } else {
-            // 对于由状态机处理的动作，直接设置状态
-            currentAction = action;
-        }
+        // 更新当前动作和时间戳
+        currentAction = action;
+        lastActionTimestamp = control.millis();
     }
 
     // 辅助函数：执行单次动作
