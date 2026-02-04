@@ -1539,6 +1539,37 @@ class RobotPu {
         this.pr.servoTrim = [leftFoot, leftLeg, rightFoot, rightLeg, headYaw, headPitch];
     }
 
+    /**
+     * Set target angles for all servos directly.
+     * @param leftFoot Target angle for left foot servo (0-180)
+     * @param leftLeg Target angle for left leg servo (0-180)
+     * @param rightFoot Target angle for right foot servo (0-180)
+     * @param rightLeg Target angle for right leg servo (0-180)
+     * @param headOffset Target angle for head offset servo (0-180)
+     * @param headPitch Target angle for head pitch servo (0-180)
+     */
+    public setServoTargets(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headOffset: number, headPitch: number): void {
+        // Validate and clamp angles
+        const angles = [
+            Math.min(180, Math.max(0, Math.floor(leftFoot))),
+            Math.min(180, Math.max(0, Math.floor(leftLeg))),
+            Math.min(180, Math.max(0, Math.floor(rightFoot))),
+            Math.min(180, Math.max(0, Math.floor(rightLeg))),
+            Math.min(180, Math.max(0, Math.floor(headOffset))),
+            Math.min(180, Math.max(0, Math.floor(headPitch)))
+        ];
+        
+        // Switch to manual mode to prevent state machine interference
+        this.gst = 6; // 6 is manual mode index
+        this.lastCmdTS = control.millis(); // Update command timestamp
+        
+        // Update target positions and set servos
+        for (let i = 0; i < angles.length; i++) {
+            this.pr.servoTarget[i] = angles[i];
+            this.wk.servo(i, angles[i]);
+        }
+    }
+
     public calibrate() {
         /**
          * Run the robot's calibration routine.

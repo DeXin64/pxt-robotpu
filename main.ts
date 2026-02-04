@@ -110,7 +110,7 @@ namespace robotPu {
     //% leftFoot.defl=90 leftLeg.defl=90 rightFoot.defl=90 rightLeg.defl=90 headOffset.defl=90 headPitch.defl=90
     //% weight=80 blockGap=8
     export function setServoInitialState(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headOffset: number, headPitch: number): void {
-        ensureRobot().setTrim(leftFoot, leftLeg, rightFoot, rightLeg, headOffset, headPitch);
+        ensureRobot().setServoTargets(leftFoot, leftLeg, rightFoot, rightLeg, headOffset, headPitch);
     }
 
     /**
