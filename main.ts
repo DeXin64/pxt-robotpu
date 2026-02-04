@@ -257,41 +257,36 @@ namespace robotPu {
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        
         switch (action) {
             case Action.Greet:
                 // 打招呼动作
-                robot.gst = 0; // 先回到空闲状态
                 robot.greet(); // 执行具体的打招呼动作
+                robot.gst = 6; // 保持在手动模式，直到有其他指令来切换
                 break;
             case Action.Rest:
                 // 休息动作
-                robot.gst = 0;
-                robot.rest(); // 执行具体的休息动作
+                robot.gst = 0; // 设置为空闲状态
                 break;
             case Action.Explore:
                 // 自主探索
-                robot.gst = 1;
-                robot.explore(); // 执行具体的自主探索动作
+                robot.gst = 1; // 设置为探索状态
                 break;
             case Action.Jump:
                 // 跳跃动作
-                robot.gst = 2;
-                robot.jump(); // 执行具体的跳跃动作
+                robot.gst = 2; // 设置为跳跃状态
                 break;
             case Action.Dance:
                 // 跳舞动作
-                robot.gst = 3;
-                robot.dance(); // 执行具体的跳舞动作
+                robot.gst = 3; // 设置为跳舞状态
                 break;
             case Action.Kick:
                 // 踢腿动作
-                robot.gst = 4;
-                robot.kick(); // 执行具体的踢腿动作
+                robot.gst = 4; // 设置为踢腿状态
                 break;
             case Action.WalkRemote:
                 // 远程控制
-                robot.gst = 5;
-                robot.joystick(); // 执行具体的远程控制动作
+                robot.gst = 5; // 设置为远程控制状态
                 break;
         }
     }
