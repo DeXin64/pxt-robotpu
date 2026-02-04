@@ -1355,28 +1355,38 @@ class RobotPu {
             // 执行定时动作
             switch (this.scheduledAction) {
                 case 0: // Greet
+                    this.gst = 0; // 先回到空闲状态
                     this.greet();
                     break;
                 case 1: // Rest
+                    this.gst = 0;
                     this.rest();
                     break;
                 case 2: // Explore
+                    this.gst = 1;
                     this.explore();
                     break;
                 case 3: // Jump
+                    this.gst = 2;
                     this.jump();
                     break;
                 case 4: // Dance
+                    this.gst = 3;
                     this.dance();
                     break;
                 case 5: // Kick
+                    this.gst = 4;
                     this.kick();
                     break;
                 case 6: // WalkRemote
+                    this.gst = 5;
                     this.joystick();
                     break;
             }
+            // 执行完动作后，确保回到定时调用状态
+            this.gst = 8;
             this.lastScheduledExecTS = currentTime;
+            this.lastCmdTS = currentTime;
         }
     }
 
