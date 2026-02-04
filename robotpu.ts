@@ -624,16 +624,22 @@ class RobotPu {
         private prevGst: number; // 用于检测状态变化
 
         // Movement & State
-        public lastCmdTS: number;
-        public fwdSpeed: number = 4;
-        public bwdSpeed: number = -3;
-        public walkSpeed: number = 0;
-        public walkDirection: number = 0;
-        private headPitchBias: number = 0;
-        private headYawBias: number = 0;
-        private alertLevel: number = 10;
-        private alertScale: number = 0.9;
-        private restState: number = 26;
+            public lastCmdTS: number;
+            public fwdSpeed: number = 4;
+            public bwdSpeed: number = -3;
+            public walkSpeed: number = 0;
+            public walkDirection: number = 0;
+            private headPitchBias: number = 0;
+            private headYawBias: number = 0;
+            private alertLevel: number = 10;
+            private alertScale: number = 0.9;
+            private restState: number = 26;
+            
+            // 定时调用相关属性
+            public scheduledAction: number = -1; // 定时调用的目标动作
+            public scheduledInterval: number = 3000; // 内部时间间隔参数（毫秒）
+            public lastScheduledExecTS: number = 0; // 上次执行定时调用的时间戳
+            public isScheduledRunning: boolean = false; // 定时调用是否运行中
 
     // IMU & Balance
     private bodyPitch: number = 0;
@@ -741,7 +747,8 @@ class RobotPu {
             [4]: () => this.kick(),
             [5]: () => this.joystick(),
             [6]: () => this.manual(),
-            [7]: () => this.continuousMove()
+            [7]: () => this.continuousMove(),
+            [8]: () => this.scheduledExecute() // 定时调用状态
         };
 
         this.wk.eyesCtl(1);
@@ -1333,6 +1340,66 @@ class RobotPu {
 
     public sleepMode(): void {
         this.sleep_mode();
+    }
+
+    /**
+     * 定时执行动作的实现方法
+     */
+    public scheduledExecute(): void {
+        if (this.scheduledAction === -1 || !this.isScheduledRunning) {
+            return;
+        }
+
+        const currentTime = control.millis();
+        if (currentTime - this.lastScheduledExecTS >= this.scheduledInterval) {
+            // 执行定时动作
+            switch (this.scheduledAction) {
+                case 0: // Greet
+                    this.greet();
+                    break;
+                case 1: // Rest
+                    this.rest();
+                    break;
+                case 2: // Explore
+                    this.explore();
+                    break;
+                case 3: // Jump
+                    this.jump();
+                    break;
+                case 4: // Dance
+                    this.dance();
+                    break;
+                case 5: // Kick
+                    this.kick();
+                    break;
+                case 6: // WalkRemote
+                    this.joystick();
+                    break;
+            }
+            this.lastScheduledExecTS = currentTime;
+        }
+    }
+
+    /**
+     * 启动定时调用
+     * @param action 要定时执行的动作
+     */
+    public startScheduledExecute(action: number): void {
+        this.scheduledAction = action;
+        this.isScheduledRunning = true;
+        this.lastScheduledExecTS = control.millis();
+        this.gst = 8; // 切换到定时调用状态
+        this.lastCmdTS = control.millis();
+    }
+
+    /**
+     * 停止定时调用
+     */
+    public stopScheduledExecute(): void {
+        this.isScheduledRunning = false;
+        this.scheduledAction = -1;
+        this.gst = 0; // 回到空闲状态
+        this.lastCmdTS = control.millis();
     }
 
     /**

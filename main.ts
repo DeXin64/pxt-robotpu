@@ -413,6 +413,30 @@ namespace robotPu {
     }
 
     /**
+     * Start scheduled execution of an action. Automatically executes the specified action at regular intervals.
+     */
+    //% group="Actions"
+    //% block="start scheduled execute %action"
+    //% weight=50 blockGap=8
+    export function startScheduledExecute(action: Action): void {
+        const robot = ensureRobot();
+        // 将Action枚举转换为数字索引
+        const actionIndex = action as number;
+        robot.startScheduledExecute(actionIndex);
+    }
+
+    /**
+     * Stop scheduled execution.
+     */
+    //% group="Actions"
+    //% block="stop scheduled execute"
+    //% weight=49 blockGap=8
+    export function stopScheduledExecute(): void {
+        const robot = ensureRobot();
+        robot.stopScheduledExecute();
+    }
+
+    /**
      * Set servo angle. Directly rotate the specified servo to the target angle.
      */
     //% group="Actions"
