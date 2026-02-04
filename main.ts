@@ -82,10 +82,10 @@ namespace robotPu {
         [Action.Greet]: 2000,  // 2秒
         [Action.Jump]: 1500,   // 1.5秒
         [Action.Kick]: 1000,   // 1秒
-        [Action.Dance]: 0,     // 0表示由状态机处理，不需要重复执行
-        [Action.Explore]: 0,   // 0表示由状态机处理，不需要重复执行
-        [Action.Rest]: 0,      // 0表示由状态机处理，不需要重复执行
-        [Action.WalkRemote]: 0 // 0表示由状态机处理，不需要重复执行
+        [Action.Dance]: 2000,   // 2秒（修改为重复执行）
+        [Action.Explore]: 100,  // 100毫秒（修改为重复执行，频率较高）
+        [Action.Rest]: 0,       // 0表示由状态机处理，不需要重复执行
+        [Action.WalkRemote]: 100 // 100毫秒（修改为重复执行，频率较高）
     };
 
     export enum MoveDirection {
@@ -310,7 +310,7 @@ namespace robotPu {
                 break;
             case Action.Jump:
                 // 跳跃动作
-                robot.gst = 2; // 设置为跳跃状态
+                robot.gst = 5; // 设置为手动模式
                 robot.jump(); // 执行具体的跳跃动作
                 break;
             case Action.Dance:
