@@ -2,9 +2,6 @@
 //block="robot PU" blockId="robotPu"
 namespace robotPu {
     let robot: RobotPu;
-    let currentAction: Action | null = null;
-    let lastActionTimestamp: number = 0;
-    let isActionExecuting: boolean = false;
 
     function ensureRobot(): RobotPu {
         if (!robot) {
@@ -15,19 +12,6 @@ namespace robotPu {
                 while (true) {
                     robot.updateStates();
                     robot.stateMachine();
-                    
-                    // 检查是否需要重复执行动作
-                    if (currentAction !== null && !isActionExecuting) {
-                        const interval = actionIntervals[currentAction] || 1000;
-                        const currentTime = control.millis();
-                        if (interval > 0 && currentTime - lastActionTimestamp > interval) {
-                            isActionExecuting = true;
-                            executeSingleAction(currentAction);
-                            lastActionTimestamp = currentTime;
-                            isActionExecuting = false;
-                        }
-                    }
-                    
                     basic.pause(5);
                 }
             });
@@ -79,17 +63,6 @@ namespace robotPu {
         //% block="walk (remote control)"
         WalkRemote
     }
-
-    // 为每个动作设置默认的间隔时间（毫秒）
-    const actionIntervals: { [key: number]: number } = {
-        [Action.Greet]: 2000,  // 2秒
-        [Action.Jump]: 1500,   // 1.5秒
-        [Action.Kick]: 1000,   // 1秒
-        [Action.Dance]: 2000,   // 2秒（修改为重复执行）
-        [Action.Explore]: 100,  // 100毫秒（修改为重复执行，频率较高）
-        [Action.Rest]: 0,       // 0表示由状态机处理，不需要重复执行
-        [Action.WalkRemote]: 100 // 100毫秒（修改为重复执行，频率较高）
-    };
 
     export enum MoveDirection {
         //% block="forward"
@@ -283,53 +256,43 @@ namespace robotPu {
     //% weight=55 blockGap=8
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
+        robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        
-        // 执行一次动作
-        isActionExecuting = true;
-        executeSingleAction(action);
-        isActionExecuting = false;
-        
-        // 更新当前动作和时间戳
-        currentAction = action;
-        lastActionTimestamp = control.millis();
-    }
-
-    // 辅助函数：执行单次动作
-    function executeSingleAction(action: Action): void {
-        const robot = ensureRobot();
-        
         switch (action) {
             case Action.Greet:
                 // 打招呼动作
+                robot.gst = 0; // 先回到空闲状态
                 robot.greet(); // 执行具体的打招呼动作
-                robot.gst = 6; // 保持在手动模式，直到有其他指令来切换
                 break;
             case Action.Rest:
                 // 休息动作
-                robot.gst = 0; // 设置为空闲状态
+                robot.gst = 0;
+                robot.rest(); // 执行具体的休息动作
                 break;
             case Action.Explore:
                 // 自主探索
-                robot.gst = 1; // 设置为探索状态
+                robot.gst = 1;
+                robot.explore(); // 执行具体的自主探索动作
                 break;
             case Action.Jump:
                 // 跳跃动作
-                robot.gst = 5; // 设置为手动模式
+                robot.gst = 2;
                 robot.jump(); // 执行具体的跳跃动作
                 break;
             case Action.Dance:
                 // 跳舞动作
-                robot.gst = 3; // 设置为跳舞状态
+                robot.gst = 3;
+                robot.dance(); // 执行具体的跳舞动作
                 break;
             case Action.Kick:
                 // 踢腿动作
-                robot.gst = 4; // 设置为踢腿状态
+                robot.gst = 4;
                 robot.kick(); // 执行具体的踢腿动作
                 break;
             case Action.WalkRemote:
                 // 远程控制
-                robot.gst = 5; // 设置为远程控制状态
+                robot.gst = 5;
+                robot.joystick(); // 执行具体的远程控制动作
                 break;
         }
     }
