@@ -4,6 +4,7 @@ namespace robotPu {
     let robot: RobotPu;
     let currentAction: Action | null = null;
     let lastActionTimestamp: number = 0;
+    let isActionExecuting: boolean = false;
 
     function ensureRobot(): RobotPu {
         if (!robot) {
@@ -16,12 +17,14 @@ namespace robotPu {
                     robot.stateMachine();
                     
                     // 检查是否需要重复执行动作
-                    if (currentAction !== null) {
+                    if (currentAction !== null && !isActionExecuting) {
                         const interval = actionIntervals[currentAction] || 1000;
                         const currentTime = control.millis();
                         if (interval > 0 && currentTime - lastActionTimestamp > interval) {
+                            isActionExecuting = true;
                             executeSingleAction(currentAction);
                             lastActionTimestamp = currentTime;
+                            isActionExecuting = false;
                         }
                     }
                     
@@ -283,7 +286,9 @@ namespace robotPu {
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
         
         // 执行一次动作
+        isActionExecuting = true;
         executeSingleAction(action);
+        isActionExecuting = false;
         
         // 更新当前动作和时间戳
         currentAction = action;
