@@ -362,12 +362,18 @@ namespace robotPu {
         // 根据方向调用相应的机器人运动方法
         switch (direction) {
             case MoveDirection.Forward:
-                // 向前走：使用配置的前进最大速度，直行
-                doCompletions(() => robot.walk(robot.fwdSpeed, 0), steps * 2);
+                // 向前走：每次都获取最新的前进最大速度，直行
+                doCompletions(() => {
+                    const currentSpeed = robot.getFwdMaxSpeed();
+                    return robot.walk(currentSpeed, 0);
+                }, steps * 2);
                 break;
             case MoveDirection.Backward:
-                // 向后走：使用配置的后退最大速度，直行
-                doCompletions(() => robot.walk(robot.bwdSpeed, 0), steps * 2);
+                // 向后走：每次都获取最新的后退最大速度，直行
+                doCompletions(() => {
+                    const currentSpeed = robot.getBwdMaxSpeed();
+                    return robot.walk(currentSpeed, 0);
+                }, steps * 2);
                 break;
             case MoveDirection.SideLeft:
                 // 向左侧步：负方向，使用配置的速度
