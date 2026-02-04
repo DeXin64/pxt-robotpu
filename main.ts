@@ -66,6 +66,17 @@ namespace robotPu {
         WalkRemote
     }
 
+    // 为每个动作设置默认的间隔时间（毫秒）
+    const actionIntervals: { [key: number]: number } = {
+        [Action.Greet]: 2000,  // 2秒
+        [Action.Jump]: 1500,   // 1.5秒
+        [Action.Kick]: 1000,   // 1秒
+        [Action.Dance]: 0,     // 0表示由状态机处理，不需要重复执行
+        [Action.Explore]: 0,   // 0表示由状态机处理，不需要重复执行
+        [Action.Rest]: 0,      // 0表示由状态机处理，不需要重复执行
+        [Action.WalkRemote]: 0 // 0表示由状态机处理，不需要重复执行
+    }
+
     export enum MoveDirection {
         //% block="forward"
         Forward,
@@ -256,17 +267,6 @@ namespace robotPu {
     //% group="Actions"
     //% block="execute action %action"
     //% weight=55 blockGap=8
-    // 为每个动作设置默认的间隔时间（毫秒）
-    const actionIntervals: { [key: number]: number } = {
-        [Action.Greet]: 2000,  // 2秒
-        [Action.Jump]: 1500,   // 1.5秒
-        [Action.Kick]: 1000,   // 1秒
-        [Action.Dance]: 0,     // 0表示由状态机处理，不需要重复执行
-        [Action.Explore]: 0,   // 0表示由状态机处理，不需要重复执行
-        [Action.Rest]: 0,      // 0表示由状态机处理，不需要重复执行
-        [Action.WalkRemote]: 0 // 0表示由状态机处理，不需要重复执行
-    };
-
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
