@@ -273,7 +273,7 @@ namespace robotPu {
         
         // 停止之前的重复执行
         if (repeatActionTimer) {
-            control.clearInterval(0, repeatActionTimer);
+            control.clearInterval(repeatActionTimer);
         }
         
         // 执行一次动作
@@ -285,7 +285,7 @@ namespace robotPu {
         // 对于需要重复执行的动作，设置重复执行
         if (interval > 0) {
             currentAction = action;
-            repeatActionTimer = control.setInterval(0, function () {
+            repeatActionTimer = control.setInterval(function () {
                 executeSingleAction(action);
             }, interval);
         } else {
