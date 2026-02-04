@@ -75,7 +75,7 @@ namespace robotPu {
         [Action.Explore]: 0,   // 0表示由状态机处理，不需要重复执行
         [Action.Rest]: 0,      // 0表示由状态机处理，不需要重复执行
         [Action.WalkRemote]: 0 // 0表示由状态机处理，不需要重复执行
-    }
+    };
 
     export enum MoveDirection {
         //% block="forward"
