@@ -310,7 +310,7 @@ namespace robotPu {
                 break;
             case Action.Jump:
                 // 跳跃动作
-                robot.gst = 6; // 设置为手动模式
+                robot.gst = 5; // 设置为手动模式
                 robot.jump(); // 执行具体的跳跃动作
                 break;
             case Action.Dance:
