@@ -107,7 +107,7 @@ namespace robotPu {
      */
     //% group="Setup"
     //% block="set servo initial state left foot %leftFoot left leg %leftLeg right foot %rightFoot right leg %rightLeg head offset %headOffset head pitch %headPitch"
-    //% leftFoot.defl=0 leftLeg.defl=0 rightFoot.defl=0 rightLeg.defl=0 headOffset.defl=0 headPitch.defl=0
+    //% leftFoot.defl=90 leftLeg.defl=90 rightFoot.defl=90 rightLeg.defl=90 headOffset.defl=90 headPitch.defl=90
     //% weight=80 blockGap=8
     export function setServoInitialState(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headOffset: number, headPitch: number): void {
         ensureRobot().setTrim(leftFoot, leftLeg, rightFoot, rightLeg, headOffset, headPitch);
