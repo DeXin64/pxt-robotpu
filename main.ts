@@ -2,6 +2,8 @@
 //block="robot PU" blockId="robotPu"
 namespace robotPu {
     let robot: RobotPu;
+    let repeatActionTimer: number;
+    let currentAction: Action | null = null;
 
     function ensureRobot(): RobotPu {
         if (!robot) {
@@ -254,9 +256,47 @@ namespace robotPu {
     //% group="Actions"
     //% block="execute action %action"
     //% weight=55 blockGap=8
+    // 为每个动作设置默认的间隔时间（毫秒）
+    const actionIntervals: { [key: number]: number } = {
+        [Action.Greet]: 2000,  // 2秒
+        [Action.Jump]: 1500,   // 1.5秒
+        [Action.Kick]: 1000,   // 1秒
+        [Action.Dance]: 0,     // 0表示由状态机处理，不需要重复执行
+        [Action.Explore]: 0,   // 0表示由状态机处理，不需要重复执行
+        [Action.Rest]: 0,      // 0表示由状态机处理，不需要重复执行
+        [Action.WalkRemote]: 0 // 0表示由状态机处理，不需要重复执行
+    };
+
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        
+        // 停止之前的重复执行
+        if (repeatActionTimer) {
+            control.clearInterval(repeatActionTimer);
+        }
+        
+        // 执行一次动作
+        executeSingleAction(action);
+        
+        // 获取动作的间隔时间
+        const interval = actionIntervals[action] || 1000;
+        
+        // 对于需要重复执行的动作，设置重复执行
+        if (interval > 0) {
+            currentAction = action;
+            repeatActionTimer = control.setInterval(function () {
+                executeSingleAction(action);
+            }, interval);
+        } else {
+            // 对于由状态机处理的动作，直接设置状态
+            currentAction = action;
+        }
+    }
+
+    // 辅助函数：执行单次动作
+    function executeSingleAction(action: Action): void {
+        const robot = ensureRobot();
         
         switch (action) {
             case Action.Greet:
@@ -275,6 +315,7 @@ namespace robotPu {
             case Action.Jump:
                 // 跳跃动作
                 robot.gst = 2; // 设置为跳跃状态
+                robot.jump(); // 执行具体的跳跃动作
                 break;
             case Action.Dance:
                 // 跳舞动作
@@ -283,6 +324,7 @@ namespace robotPu {
             case Action.Kick:
                 // 踢腿动作
                 robot.gst = 4; // 设置为踢腿状态
+                robot.kick(); // 执行具体的踢腿动作
                 break;
             case Action.WalkRemote:
                 // 远程控制
