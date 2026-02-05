@@ -256,45 +256,45 @@ namespace robotPu {
     //% weight=55 blockGap=8
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
+        robot.gst = 6; // 6是手动模式的索引
         robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        
-        // 保存当前动作类型
-        robot.currentAction = action;
-        
-        // 执行具体的动作
         switch (action) {
             case Action.Greet:
                 // 打招呼动作
+                robot.gst = 0; // 先回到空闲状态
                 robot.greet(); // 执行具体的打招呼动作
                 break;
             case Action.Rest:
                 // 休息动作
+                robot.gst = 0;
                 robot.rest(); // 执行具体的休息动作
                 break;
             case Action.Explore:
                 // 自主探索
+                robot.gst = 1;
                 robot.explore(); // 执行具体的自主探索动作
                 break;
             case Action.Jump:
                 // 跳跃动作
+                robot.gst = 2;
                 robot.jump(); // 执行具体的跳跃动作
                 break;
             case Action.Dance:
                 // 跳舞动作
+                robot.gst = 3;
                 robot.dance(); // 执行具体的跳舞动作
                 break;
             case Action.Kick:
                 // 踢腿动作
+                robot.gst = 4;
                 robot.kick(); // 执行具体的踢腿动作
                 break;
             case Action.WalkRemote:
                 // 远程控制
+                robot.gst = 5;
                 robot.joystick(); // 执行具体的远程控制动作
                 break;
         }
-        
-        // 切换到持续执行状态
-        robot.gst = 9; // 9是持续执行动作的状态索引
     }
 
     /**

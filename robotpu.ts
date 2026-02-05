@@ -640,9 +640,6 @@ class RobotPu {
             public scheduledInterval: number = 3000; // 内部时间间隔参数（毫秒）
             public lastScheduledExecTS: number = 0; // 上次执行定时调用的时间戳
             public isScheduledRunning: boolean = false; // 定时调用是否运行中
-            
-            // 持续执行动作相关属性
-            public currentAction: number = -1; // 当前执行的动作类型
 
     // IMU & Balance
     private bodyPitch: number = 0;
@@ -751,8 +748,7 @@ class RobotPu {
             [5]: () => this.joystick(),
             [6]: () => this.manual(),
             [7]: () => this.continuousMove(),
-            [8]: () => this.scheduledExecute(), // 定时调用状态
-            [9]: () => this.continuousAction() // 持续执行动作状态
+            [8]: () => this.scheduledExecute() // 定时调用状态
         };
 
         this.wk.eyesCtl(1);
@@ -1414,43 +1410,6 @@ class RobotPu {
         this.scheduledAction = -1;
         this.gst = 0; // 回到空闲状态
         this.lastCmdTS = control.millis();
-    }
-    
-    /**
-     * 持续执行当前动作的状态处理函数
-     * 会一直执行currentAction指定的动作，直到gst状态被修改
-     */
-    public continuousAction(): void {
-        // 更新命令时间戳，防止超时
-        this.lastCmdTS = control.millis();
-        
-        // 检查当前动作是否有效
-        if (this.currentAction >= 0) {
-            // 根据currentAction执行对应的动作
-            switch (this.currentAction) {
-                case 0: // Greet
-                    this.greet();
-                    break;
-                case 1: // Rest
-                    this.rest();
-                    break;
-                case 2: // Explore
-                    this.explore();
-                    break;
-                case 3: // Jump
-                    this.jump();
-                    break;
-                case 4: // Dance
-                    this.dance();
-                    break;
-                case 5: // Kick
-                    this.kick();
-                    break;
-                case 6: // WalkRemote
-                    this.joystick();
-                    break;
-            }
-        }
     }
 
     /**
