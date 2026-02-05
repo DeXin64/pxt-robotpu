@@ -7,6 +7,7 @@
     "robotPu.setLeftEyeBrightness": "设置左眼亮度。调节左眼灯光的亮度。",
     "robotPu.setRightEyeBrightness": "设置右眼亮度。调节右眼灯光的亮度。",
     "robotPu.executeAction": "执行动作。执行指定的预设动作。选择“自主探索”时，机器人将向前行走并在遇到障碍物时自动转向；选择“远程控制”需与“远程控制”功能配合使用。",
+    "robotPu.exitLoop": "退出循环。停止定时执行动作并返回空闲状态。",
     "robotPu.setMoveDirection": "设置机器人移动方向。设置 PU 机器人的移动方向。",
     "robotPu.setWalkSpeed": "设置机器人行走速度与转向。设置 PU 机器人的行走速度和转向方向。",
     "robotPu.talk": "说话。让机器人说出指定的文本。",
