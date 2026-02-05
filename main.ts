@@ -324,36 +324,40 @@ namespace robotPu {
      * Walk a certain number of steps in a specific direction. Make the PU robot walk the specified number of steps in the given direction using the configured speed.
      */
     //% group="Actions"
-    //% block="walk %direction for %steps steps"
+    //% block="walk %direction for %steps steps at speed %speed"
     //% steps.min=1 steps.max=100 steps.defl=5
+    //% speed.min=1 speed.max=10 speed.defl=5
     //% direction.defl=MoveDirection.Forward
     //% weight=53 blockGap=8
-    export function setWalkSpeed(direction: MoveDirection, steps: number): void {
+    export function setWalkSpeed(direction: MoveDirection, steps: number, speed: number): void {
         const robot = ensureRobot();
+        
+        // Map speed from 1-10 to appropriate range
+        const normalizedSpeed = Math.max(0.1, Math.min(1, speed / 10));
         
         // 根据方向调用相应的机器人运动方法
         switch (direction) {
             case MoveDirection.Forward:
-                // 向前走：每次都获取最新的前进最大速度，直行
+                // 向前走：使用用户指定的速度，直行
                 doCompletions(() => {
-                    const currentSpeed = robot.getFwdMaxSpeed();
+                    const currentSpeed = 2 * normalizedSpeed;
                     return robot.walk(currentSpeed, 0);
                 }, steps * 2);
                 break;
             case MoveDirection.Backward:
-                // 向后走：每次都获取最新的后退最大速度，直行
+                // 向后走：使用用户指定的速度，直行
                 doCompletions(() => {
-                    const currentSpeed = robot.getBwdMaxSpeed();
+                    const currentSpeed = 2 * normalizedSpeed;
                     return robot.walk(currentSpeed, 0);
                 }, steps * 2);
                 break;
             case MoveDirection.SideLeft:
-                // 向左侧步：负方向，使用配置的速度
-                doCompletions(() => robot.sideStep(-0.2), steps * 2);
+                // 向左侧步：负方向，使用用户指定的速度
+                doCompletions(() => robot.sideStep(-normalizedSpeed * 0.2), steps * 2);
                 break;
             case MoveDirection.SideRight:
-                // 向右侧步：正方向，使用配置的速度
-                doCompletions(() => robot.sideStep(0.2), steps * 2);
+                // 向右侧步：正方向，使用用户指定的速度
+                doCompletions(() => robot.sideStep(normalizedSpeed * 0.2), steps * 2);
                 break;
         }
     }
