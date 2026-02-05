@@ -305,7 +305,7 @@ namespace robotPu {
     //% weight=52 blockGap=8
     export function startTimedAction(action: Action): void {
         const robot = ensureRobot();
-        robot.scheduledInterval = 1000; // Set interval to 1 second
+        robot.scheduledInterval = 0; // Set interval to 1 second
         robot.startScheduledExecute(action);
     }
 
