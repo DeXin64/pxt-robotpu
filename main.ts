@@ -298,6 +298,29 @@ namespace robotPu {
     }
 
     /**
+     * Start timed execution of an action with 1-second interval.
+     */
+    //% group="Actions"
+    //% block="start timed action %action"
+    //% weight=52 blockGap=8
+    export function startTimedAction(action: Action): void {
+        const robot = ensureRobot();
+        robot.scheduledInterval = 1000; // Set interval to 1 second
+        robot.startScheduledExecute(action);
+    }
+
+    /**
+     * Exit loop - stop timed execution.
+     */
+    //% group="Actions"
+    //% block="exit loop"
+    //% weight=51 blockGap=8
+    export function exitLoop(): void {
+        const robot = ensureRobot();
+        robot.stopScheduledExecute();
+    }
+
+    /**
      * Set robot move direction. Set the movement direction of the PU robot.
      */
     //% group="Actions"
