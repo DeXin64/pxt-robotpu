@@ -1452,37 +1452,6 @@ class RobotPu {
             }
         }
     }
-    
-    /**
-     * 打招呼动作
-     */
-    public greet(): void {
-        // 实现打招呼动作的逻辑
-        // 这里可以根据需要添加具体的动作实现
-        this.rest();
-    }
-    
-    /**
-     * 跳舞动作
-     */
-    public dance(): void {
-        // 实现跳舞动作的逻辑
-        // 这里使用一个简单的舞蹈序列作为示例
-        let currentTime = control.millis();
-        
-        // 选择一个舞蹈序列
-        let danceKey = Math.floor(currentTime / 5000) % Object.keys(this.danceDict).length;
-        let danceSequence = this.danceDict[Object.keys(this.danceDict)[danceKey]];
-        
-        // 执行舞蹈动作
-        if (danceSequence && danceSequence.length > 0) {
-            let stepIndex = Math.floor((currentTime % 5000) / 500) % danceSequence.length;
-            let stateIndex = danceSequence[stepIndex];
-            
-            // 执行对应的状态
-            this.wk.move(this.pr, [stateIndex], [0, 1, 2, 3], this.danceSpeed, [4, 5], this.danceSpeed);
-        }
-    }
 
     /**
      * Main state machine for robot behavior control.
