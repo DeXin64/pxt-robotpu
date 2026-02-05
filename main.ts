@@ -59,9 +59,7 @@ namespace robotPu {
         //% block="dance"
         Dance,
         //% block="kick"
-        Kick,
-        //% block="walk (remote control)"
-        WalkRemote
+        Kick
     }
 
     export enum MoveDirection {
