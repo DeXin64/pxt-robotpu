@@ -262,7 +262,7 @@ namespace robotPu {
      * Exit loop - stop timed execution.
      */
     //% group="Actions"
-    //% block="exit loop"
+    //% block="stop action"
     //% weight=51 blockGap=8
     export function exitLoop(): void {
         const robot = ensureRobot();

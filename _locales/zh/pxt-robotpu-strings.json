@@ -38,7 +38,7 @@
     "robotPu.setLeftEyeBrightness|block": "设置左眼亮度 %brightness",
     "robotPu.setRightEyeBrightness|block": "设置右眼亮度 %brightness",
     "robotPu.executeAction|block": "执行动作 %action",
-    "robotPu.exitLoop|block": "退出循环",
+    "robotPu.exitLoop|block": "停止动作",
     "robotPu.setMoveDirection|block": "设置PU机器人移动方向 %direction",
     "robotPu.setWalkSpeed|block": " 向 %direction 走 %steps 步以速度 %speed",
     "robotPu.talk|block": "说话 %text",
