@@ -1,7 +1,7 @@
 {
     "robotPu.setServoInitialState": "Set servo initial state. This is a background function, only for after-sales use, users do not need to operate.",
-    "robotPu.setWalkSpeedRange": "Set walking speed range. Configure the maximum speed of the robot for forward and backward movement.",
-    "robotPu.ultrasonicDistance": "Get ultrasonic sensor distance. Returns the distance detected by the ultrasonic sensor, units can be selected as centimeters or inches.",
+    "robotPu.setWalkSpeedRange": "Set walking speed range. Configure maximum speed of robot for forward and backward movement.",
+    "robotPu.ultrasonicDistance": "Get ultrasonic sensor distance. Returns distance detected by the ultrasonic sensor, units can be selected as centimeters or inches.",
     "robotPu.setAmbienceLight": "Set ambience light. Set the selected ambience light to the specified RGB color.",
     "robotPu.setEyesState": "Set left/right eye state. Turn the left and right eyes on or off.",
     "robotPu.setLeftEyeBrightness": "Set left eye brightness. Adjust the brightness of the left eye light.",
@@ -12,5 +12,22 @@
     "robotPu.talk": "Talk. Make the robot say the specified text.",
     "robotPu.sing": "Sing. Make the robot sing the specified song or command.",
     "robotPu.setServoAngle": "Set servo angle. Directly rotate the specified servo to the target angle.",
-    "robotPu.smoothSetServoAngle": "Smooth set servo angle. Smoothly rotate the specified servo to the target angle with the specified step length."
+    "robotPu.smoothSetServoAngle": "Smooth set servo angle. Smoothly rotate the specified servo to the target angle with the specified step length.",
+    "robotPu.setControllerRadioGroup": "Set controller radio group. Set the radio channel for the controller (0-255).",
+    "robotPu.sendTurnValue": "Send turn value. Send the turn control value to the robot (-1 to 1).",
+    "robotPu.sendSpeedValue": "Send speed value. Send the speed control value to the robot (-1 to 1).",
+    "robotPu.sendPitchValue": "Send pitch value. Send the controller's pitch angle to the robot.",
+    "robotPu.sendRollValue": "Send roll value. Send the controller's roll angle to the robot.",
+    "robotPu.sendButtonCommand": "Send button command. Send a button command to the robot (0-4).",
+    "robotPu.sendTextMessage": "Send text message. Send a text message to the robot.",
+    "robotPu.setRobotRadioGroup": "Set robot radio group. Set the radio channel for the robot (0-255).",
+    "robotPu.enableRemoteControl": "Enable remote control. Enable the robot to receive remote control commands.",
+    "robotPu.disableRemoteControl": "Disable remote control. Disable the robot from receiving remote control commands.",
+    "robotPu.onTurnValueReceived": "On turn value received. Run code when a turn value is received from the controller.",
+    "robotPu.onSpeedValueReceived": "On speed value received. Run code when a speed value is received from the controller.",
+    "robotPu.onButtonCommandReceived": "On button command received. Run code when a button command is received from the controller.",
+    "robotPu.onTextMessageReceived": "On text message received. Run code when a text message is received from the controller.",
+    "robotPu.getCurrentTurnValue": "Get current turn value. Get the most recently received turn value from the controller.",
+    "robotPu.getCurrentSpeedValue": "Get current speed value. Get the most recently received speed value from the controller.",
+    "robotPu.getCurrentButtonValue": "Get current button value. Get the most recently received button value from the controller."
 }
