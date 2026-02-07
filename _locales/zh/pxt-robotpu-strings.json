@@ -61,6 +61,8 @@
     "robotPu.ControlValueType.Speed|block": "速度",
     "robotPu.ControlValueType.Button|block": "按钮",
     "robotPu.ControlValueType.Text|block": "文本",
+    "robotPu.ControlValueType.Pitch|block": "俯仰",
+    "robotPu.ControlValueType.Roll|block": "滚动",
     "robotPu.setControllerRadioGroup|block": "设置控制器无线电组 %group",
     "robotPu.readJoystickValue|block": "读取摇杆值 %axis",
     "robotPu.initControllerButtons|block": "初始化控制器按键",

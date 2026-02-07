@@ -616,10 +616,14 @@ namespace robotPu {
     let currentSpeedValue: number = 0;
     let currentButtonValue: number = 0;
     let currentTextMessage: string = "";
+    let currentPitchValue: number = 0;
+    let currentRollValue: number = 0;
     let onTurnValueHandler: (value: number) => void = null;
     let onSpeedValueHandler: (value: number) => void = null;
     let onButtonCommandHandler: (button: number) => void = null;
     let onTextMessageHandler: (text: string) => void = null;
+    let onPitchValueHandler: (value: number) => void = null;
+    let onRollValueHandler: (value: number) => void = null;
 
     /**
      * Enable remote control with group. Enable the robot to receive remote control commands and set the radio group.
@@ -653,9 +657,15 @@ namespace robotPu {
                     onButtonCommandHandler(value);
                 }
             } else if (name == "#pupitch") {
-                robot.pitch(value);
+                currentPitchValue = value;
+                if (onPitchValueHandler) {
+                    onPitchValueHandler(value);
+                }
             } else if (name == "#puroll") {
-                robot.roll(value);
+                currentRollValue = value;
+                if (onRollValueHandler) {
+                    onRollValueHandler(value);
+                }
             }
         });
         
@@ -691,7 +701,11 @@ namespace robotPu {
         //% block="button"
         Button,
         //% block="text"
-        Text
+        Text,
+        //% block="pitch"
+        Pitch,
+        //% block="roll"
+        Roll
     }
 
     /**
@@ -714,6 +728,12 @@ namespace robotPu {
             case ControlValueType.Text:
                 onTextMessageHandler = handler;
                 break;
+            case ControlValueType.Pitch:
+                onPitchValueHandler = handler;
+                break;
+            case ControlValueType.Roll:
+                onRollValueHandler = handler;
+                break;
         }
     }
 
@@ -733,6 +753,10 @@ namespace robotPu {
                 return currentButtonValue;
             case ControlValueType.Text:
                 return currentTextMessage;
+            case ControlValueType.Pitch:
+                return currentPitchValue;
+            case ControlValueType.Roll:
+                return currentRollValue;
             default:
                 return 0;
         }
