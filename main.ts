@@ -470,7 +470,7 @@ namespace robotPu {
     /**
      * Set controller radio group. Set the radio channel for the controller (0-255).
      */
-    //% group="Remote Control"
+    //% group="Controller"
     //% block="set controller radio group %group"
     //% group.min=0 group.max=255 group.defl=160
     //% weight=40 blockGap=8
@@ -480,73 +480,136 @@ namespace robotPu {
         basic.showNumber(controllerRadioGroup);
     }
 
+    export enum JoystickAxis {
+        //% block="turn"
+        Turn,
+        //% block="speed"
+        Speed
+    }
+
     /**
-     * Send turn value. Send the turn control value to the robot (-1 to 1).
+     * Read joystick value. Read the joystick value for the specified axis (-1 to 1).
      */
-    //% group="Remote Control"
-    //% block="send turn value %value"
-    //% value.min=-1 value.max=1 value.defl=0
+    //% group="Controller"
+    //% block="read joystick value %axis"
     //% weight=39 blockGap=8
-    export function sendTurnValue(value: number): void {
-        radio.sendValue("#puturn", value);
+    export function readJoystickValue(axis: JoystickAxis): number {
+        if (axis == JoystickAxis.Turn) {
+            return (512 - pins.analogReadPin(AnalogPin.P2)) / 512;
+        } else {
+            return (512 - pins.analogReadPin(AnalogPin.P1)) / 512;
+        }
     }
 
     /**
-     * Send speed value. Send the speed control value to the robot (-1 to 1).
+     * Initialize controller buttons. Set up the pull-up resistors for all controller buttons.
      */
-    //% group="Remote Control"
-    //% block="send speed value %value"
-    //% value.min=-1 value.max=1 value.defl=0
+    //% group="Controller"
+    //% block="initialize controller buttons"
     //% weight=38 blockGap=8
-    export function sendSpeedValue(value: number): void {
-        radio.sendValue("#puspeed", value);
+    export function initControllerButtons(): void {
+        pins.setPull(DigitalPin.P8, PinPullMode.PullUp);
+        pins.setPull(DigitalPin.P13, PinPullMode.PullUp);
+        pins.setPull(DigitalPin.P14, PinPullMode.PullUp);
+        pins.setPull(DigitalPin.P15, PinPullMode.PullUp);
+        pins.setPull(DigitalPin.P16, PinPullMode.PullUp);
+    }
+
+    export enum ControllerButton {
+        //% block="joystick press"
+        JoystickPress,
+        //% block="B1"
+        B1,
+        //% block="B2"
+        B2,
+        //% block="B3"
+        B3,
+        //% block="B4"
+        B4
     }
 
     /**
-     * Send pitch value. Send the controller's pitch angle to the robot.
+     * Get controller button pressed. Check if the specified controller button is pressed.
      */
-    //% group="Remote Control"
-    //% block="send pitch value %value"
-    //% value.min=-90 value.max=90 value.defl=0
+    //% group="Controller"
+    //% block="%button pressed"
     //% weight=37 blockGap=8
-    export function sendPitchValue(value: number): void {
-        radio.sendValue("#pupitch", value);
+    export function getControllerButtonPressed(button: ControllerButton): boolean {
+        let pin: DigitalPin;
+        switch (button) {
+            case ControllerButton.JoystickPress:
+                pin = DigitalPin.P8;
+                break;
+            case ControllerButton.B1:
+                pin = DigitalPin.P13;
+                break;
+            case ControllerButton.B2:
+                pin = DigitalPin.P14;
+                break;
+            case ControllerButton.B3:
+                pin = DigitalPin.P15;
+                break;
+            case ControllerButton.B4:
+                pin = DigitalPin.P16;
+                break;
+            default:
+                return false;
+        }
+        return pins.digitalReadPin(pin) == 0;
+    }
+
+    export enum SendControlType {
+        //% block="turn"
+        Turn,
+        //% block="speed"
+        Speed,
+        //% block="pitch"
+        Pitch,
+        //% block="roll"
+        Roll,
+        //% block="button"
+        Button
     }
 
     /**
-     * Send roll value. Send the controller's roll angle to the robot.
+     * Send control value. Send a control value to the robot.
      */
-    //% group="Remote Control"
-    //% block="send roll value %value"
-    //% value.min=-90 value.max=90 value.defl=0
+    //% group="Controller"
+    //% block="send %type value %value"
+    //% value.min=-1 value.max=1 value.defl=0
     //% weight=36 blockGap=8
-    export function sendRollValue(value: number): void {
-        radio.sendValue("#puroll", value);
-    }
-
-    /**
-     * Send button command. Send a button command to the robot (0-4).
-     */
-    //% group="Remote Control"
-    //% block="send button command %button"
-    //% button.min=0 button.max=4 button.defl=0
-    //% weight=35 blockGap=8
-    export function sendButtonCommand(button: number): void {
-        radio.sendValue("#puB", button);
+    export function sendControlValue(type: SendControlType, value: number): void {
+        switch (type) {
+            case SendControlType.Turn:
+                radio.sendValue("#puturn", value);
+                break;
+            case SendControlType.Speed:
+                radio.sendValue("#puspeed", value);
+                break;
+            case SendControlType.Pitch:
+                radio.sendValue("#pupitch", value);
+                break;
+            case SendControlType.Roll:
+                radio.sendValue("#puroll", value);
+                break;
+            case SendControlType.Button:
+                radio.sendValue("#puB", value);
+                break;
+        }
     }
 
     /**
      * Send text message. Send a text message to the robot.
      */
-    //% group="Remote Control"
+    //% group="Controller"
     //% block="send text message %text"
     //% text.shadow=text
-    //% weight=34 blockGap=8
+    //% weight=35 blockGap=8
     export function sendTextMessage(text: string): void {
         radio.sendString("#put" + text);
     }
 
-    // ========== 机器人端积木块 ==========
+    // ========== 接收器端积木块 ==========
 
     let remoteControlEnabled: boolean = false;
     let currentTurnValue: number = 0;
@@ -559,26 +622,16 @@ namespace robotPu {
     let onTextMessageHandler: (text: string) => void = null;
 
     /**
-     * Set robot radio group. Set the radio channel for the robot (0-255).
+     * Enable remote control with group. Enable the robot to receive remote control commands and set the radio group.
      */
-    //% group="Remote Control"
-    //% block="set robot radio group %group"
+    //% group="Receiver"
+    //% block="enable remote control on group %group"
     //% group.min=0 group.max=255 group.defl=160
     //% weight=30 blockGap=8
-    export function setRobotRadioGroup(group: number): void {
-        const robot = ensureRobot();
-        robot.setGroupId(group);
-    }
-
-    /**
-     * Enable remote control. Enable the robot to receive remote control commands.
-     */
-    //% group="Remote Control"
-    //% block="enable remote control"
-    //% weight=29 blockGap=8
-    export function enableRemoteControl(): void {
+    export function enableRemoteControlWithGroup(group: number): void {
         const robot = ensureRobot();
         remoteControlEnabled = true;
+        robot.setGroupId(group);
         robot.gst = 5;
         
         radio.onReceivedValue(function (name: string, value: number) {
@@ -621,82 +674,67 @@ namespace robotPu {
     /**
      * Disable remote control. Disable the robot from receiving remote control commands.
      */
-    //% group="Remote Control"
+    //% group="Receiver"
     //% block="disable remote control"
-    //% weight=28 blockGap=8
+    //% weight=29 blockGap=8
     export function disableRemoteControl(): void {
         const robot = ensureRobot();
         remoteControlEnabled = false;
         robot.gst = 0;
     }
 
+    export enum ControlValueType {
+        //% block="turn"
+        Turn,
+        //% block="speed"
+        Speed,
+        //% block="button"
+        Button,
+        //% block="text"
+        Text
+    }
+
     /**
-     * On turn value received. Run code when a turn value is received from the controller.
+     * On control value received. Run code when a control value is received from the controller.
      */
-    //% group="Remote Control"
-    //% block="on turn value received"
+    //% group="Receiver"
+    //% block="on %type value received"
+    //% weight=28 blockGap=8
+    export function onControlValueReceived(type: ControlValueType, handler: (value: any) => void): void {
+        switch (type) {
+            case ControlValueType.Turn:
+                onTurnValueHandler = handler;
+                break;
+            case ControlValueType.Speed:
+                onSpeedValueHandler = handler;
+                break;
+            case ControlValueType.Button:
+                onButtonCommandHandler = handler;
+                break;
+            case ControlValueType.Text:
+                onTextMessageHandler = handler;
+                break;
+        }
+    }
+
+    /**
+     * Get control value. Get the most recently received control value from the controller.
+     */
+    //% group="Receiver"
+    //% block="current %type value"
     //% weight=27 blockGap=8
-    export function onTurnValueReceived(handler: (value: number) => void): void {
-        onTurnValueHandler = handler;
-    }
-
-    /**
-     * On speed value received. Run code when a speed value is received from the controller.
-     */
-    //% group="Remote Control"
-    //% block="on speed value received"
-    //% weight=26 blockGap=8
-    export function onSpeedValueReceived(handler: (value: number) => void): void {
-        onSpeedValueHandler = handler;
-    }
-
-    /**
-     * On button command received. Run code when a button command is received from the controller.
-     */
-    //% group="Remote Control"
-    //% block="on button command received"
-    //% weight=25 blockGap=8
-    export function onButtonCommandReceived(handler: (button: number) => void): void {
-        onButtonCommandHandler = handler;
-    }
-
-    /**
-     * On text message received. Run code when a text message is received from the controller.
-     */
-    //% group="Remote Control"
-    //% block="on text message received"
-    //% weight=24 blockGap=8
-    export function onTextMessageReceived(handler: (text: string) => void): void {
-        onTextMessageHandler = handler;
-    }
-
-    /**
-     * Get current turn value. Get the most recently received turn value from the controller.
-     */
-    //% group="Remote Control"
-    //% block="current turn value"
-    //% weight=23 blockGap=8
-    export function getCurrentTurnValue(): number {
-        return currentTurnValue;
-    }
-
-    /**
-     * Get current speed value. Get the most recently received speed value from the controller.
-     */
-    //% group="Remote Control"
-    //% block="current speed value"
-    //% weight=22 blockGap=8
-    export function getCurrentSpeedValue(): number {
-        return currentSpeedValue;
-    }
-
-    /**
-     * Get current button value. Get the most recently received button value from the controller.
-     */
-    //% group="Remote Control"
-    //% block="current button value"
-    //% weight=21 blockGap=8
-    export function getCurrentButtonValue(): number {
-        return currentButtonValue;
+    export function getControlValue(type: ControlValueType): any {
+        switch (type) {
+            case ControlValueType.Turn:
+                return currentTurnValue;
+            case ControlValueType.Speed:
+                return currentSpeedValue;
+            case ControlValueType.Button:
+                return currentButtonValue;
+            case ControlValueType.Text:
+                return currentTextMessage;
+            default:
+                return 0;
+        }
     }
 }
