@@ -477,6 +477,7 @@ namespace robotPu {
     export function setControllerRadioGroup(group: number): void {
         controllerRadioGroup = Math.max(0, Math.min(255, Math.floor(group)));
         radio.setGroup(controllerRadioGroup);
+        initControllerButtons();
         basic.showNumber(controllerRadioGroup);
     }
 
