@@ -1,5 +1,5 @@
 {
-    "robotPu.setServoInitialState": "设置舵机初始状态。后台功能，仅供售后使用，用户无需操作。",
+    "robotPu.setServoTrim": "设置舵机微调偏移。设置左脚、左腿、右脚、右腿、头部偏航和头部俯仰的舵机微调值。",
     "robotPu.setWalkSpeedRange": "设置行走速度范围。配置机器人前进与后退的最大速度。",
     "robotPu.ultrasonicDistance": "获取超声波传感器距离。返回超声波传感器检测到的距离值，单位可选择厘米或英寸。",
     "robotPu.setAmbienceLight": "设置氛围灯。将选择的氛围灯设置为指定的 RGB 颜色。",

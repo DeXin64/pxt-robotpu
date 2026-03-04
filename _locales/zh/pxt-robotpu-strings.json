@@ -30,7 +30,7 @@
     "robotPu.ServoJoint.RightLeg|block": "右腿",
     "robotPu.ServoJoint.HeadOffset|block": "头部偏移",
     "robotPu.ServoJoint.HeadPitch|block": "头部俯仰",
-    "robotPu.setServoInitialState|block": "设置舵机初始状态 左脚 %leftFoot 左腿 %leftLeg 右脚 %rightFoot 右腿 %rightLeg 头部偏移 %headOffset 头部俯仰 %headPitch",
+    "robotPu.setServoTrim|block": "设置舵机微调 左脚 %leftFoot 左腿 %leftLeg 右脚 %rightFoot 右腿 %rightLeg 头部偏航 %headYaw 头部俯仰 %headPitch",
     "robotPu.setWalkSpeedRange|block": "设置行走速度范围 前进 %forward 后退 %backward",
     "robotPu.ultrasonicDistance|block": "超声波传感器距离 (单位: %unit)",
     "robotPu.setAmbienceLight|block": "设置氛围灯 %light 为 RGB (%r, %g, %b)",

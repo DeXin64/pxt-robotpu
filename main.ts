@@ -101,14 +101,15 @@ namespace robotPu {
         HeadPitch
     }
     /**
-     * Set the initial state of the servo joints.
+     * Set servo trim offsets: left_foot, left_leg, right_foot, right_leg, head_yaw, head_pitch
      */
+    //% blockId=robotpu_setServoTrim block="set servo trim left foot %leftFoot left leg %leftLeg right foot %rightFoot right leg %rightLeg head yaw %headYaw head pitch %headPitch"
+    //% subcategory="Setup"
     //% group="Setup"
-    //% block="set servo initial state left foot %leftFoot left leg %leftLeg right foot %rightFoot right leg %rightLeg head offset %headOffset head pitch %headPitch"
-    //% leftFoot.defl=90 leftLeg.defl=90 rightFoot.defl=90 rightLeg.defl=90 headOffset.defl=90 headPitch.defl=90
+    //% leftFoot.defl=0 leftLeg.defl=0 rightFoot.defl=0 rightLeg.defl=0 headYaw.defl=0 headPitch.defl=0
     //% weight=80 blockGap=8
-    export function setServoInitialState(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headOffset: number, headPitch: number): void {
-        ensureRobot().setServoTargets(leftFoot, leftLeg, rightFoot, rightLeg, headOffset, headPitch);
+    export function setServoTrim(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headYaw: number, headPitch: number): void {
+        ensureRobot().setTrim(leftFoot, leftLeg, rightFoot, rightLeg, headYaw, headPitch);
     }
 
     /**
