@@ -77,6 +77,7 @@
     "robotPu.bodyPitch|block": "机身俯仰角",
     "robotPu.musicTempo|block": "音乐节拍",
     "robotPu.frontDistanceArray|block": "前方距离数组",
+    "robotPu.subcategory.Remote Control|block": "遥控功能",
     "{id:group}Variables": "变量",
     "{id:group}Setup": "初始化设置",
     "{id:group}Sensors": "传感器",

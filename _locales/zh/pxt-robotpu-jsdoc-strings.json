@@ -27,5 +27,6 @@
     "robotPu.bodyRoll": "获取机身滚动角。返回机器人机身当前的滚动角度。",
     "robotPu.bodyPitch": "获取机身俯仰角。返回机器人机身当前的俯仰角度。",
     "robotPu.musicTempo": "获取音乐节拍。返回当前音乐节拍（BPM）。",
-    "robotPu.frontDistanceArray": "获取前方距离数组。返回前方传感器的5个距离值数组。"
+    "robotPu.frontDistanceArray": "获取前方距离数组。返回前方传感器的5个距离值数组。",
+    "robotPu.subcategory.Remote Control": "遥控功能相关的积木块，用于控制机器人的远程通信和数据处理。"
 }

@@ -672,6 +672,7 @@ namespace robotPu {
      * Enable remote control with group. Enable the robot to receive remote control commands and set the radio group.
      */
     //% group="Receiver"
+    //% subcategory="Remote Control"
     //% block="enable remote control on group %group"
     //% group.min=0 group.max=255 group.defl=160
     //% weight=30 blockGap=8
@@ -728,6 +729,7 @@ namespace robotPu {
      * Disable remote control. Disable the robot from receiving remote control commands.
      */
     //% group="Receiver"
+    //% subcategory="Remote Control"
     //% block="disable remote control"
     //% weight=29 blockGap=8
     export function disableRemoteControl(): void {
@@ -755,6 +757,7 @@ namespace robotPu {
      * On control value received. Run code when a control value is received from the controller.
      */
     //% group="Receiver"
+    //% subcategory="Remote Control"
     //% block="on %type value received"
     //% weight=28 blockGap=8
     export function onControlValueReceived(type: ControlValueType, handler: (value: any) => void): void {
@@ -784,6 +787,7 @@ namespace robotPu {
      * Get control value. Get the most recently received control value from the controller.
      */
     //% group="Receiver"
+    //% subcategory="Remote Control"
     //% block="current %type value"
     //% weight=27 blockGap=8
     export function getControlValue(type: ControlValueType): any {
