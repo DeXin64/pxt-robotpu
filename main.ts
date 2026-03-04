@@ -144,6 +144,47 @@ namespace robotPu {
     }
 
     /**
+     * Get body roll. Returns the current roll angle of the robot body.
+     */
+    //% group="Sensors"
+    //% block="body roll"
+    //% weight=69 blockGap=8
+    export function bodyRoll(): number {
+        return ensureRobot().getBodyRoll();
+    }
+
+    /**
+     * Get body pitch. Returns the current pitch angle of the robot body.
+     */
+    //% group="Sensors"
+    //% block="body pitch"
+    //% weight=68 blockGap=8
+    export function bodyPitch(): number {
+        return ensureRobot().getBodyPitch();
+    }
+
+    /**
+     * Get music tempo. Returns the current music tempo in beats per minute (BPM).
+     */
+    //% group="Sensors"
+    //% block="music tempo"
+    //% weight=67 blockGap=8
+    export function musicTempo(): number {
+        return ensureRobot().getMusicTempo();
+    }
+
+    /**
+     * Get front distance array. Returns an array of 5 distance values from the front sensors.
+     */
+    //% group="Sensors"
+    //% block="front distance array"
+    //% weight=66 blockGap=8
+    export function frontDistanceArray(): number[] {
+        const d = ensureRobot().pr.exploreDistance;
+        return [d[0], d[1], (d[1]+d[2])*0.5, d[2], d[3]];
+    }
+
+    /**
      * Set ambience light. Set the selected ambience light to the specified RGB color.
      */
     //% group="Actuators"

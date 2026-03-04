@@ -23,5 +23,9 @@
     "robotPu.enableRemoteControlWithGroup": "启用遥控模式并设置无线电组。启用机器人接收遥控命令的功能并设置无线电频道。",
     "robotPu.disableRemoteControl": "禁用遥控模式。禁用机器人接收遥控命令的功能。",
     "robotPu.onControlValueReceived": "当接收到控制值时。当从控制器接收到控制值时运行代码。",
-    "robotPu.getControlValue": "获取控制值。获取从控制器最近接收到的控制值。"
+    "robotPu.getControlValue": "获取控制值。获取从控制器最近接收到的控制值。",
+    "robotPu.bodyRoll": "获取机身滚动角。返回机器人机身当前的滚动角度。",
+    "robotPu.bodyPitch": "获取机身俯仰角。返回机器人机身当前的俯仰角度。",
+    "robotPu.musicTempo": "获取音乐节拍。返回当前音乐节拍（BPM）。",
+    "robotPu.frontDistanceArray": "获取前方距离数组。返回前方传感器的5个距离值数组。"
 }

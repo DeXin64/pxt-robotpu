@@ -1525,6 +1525,20 @@ class RobotPu {
     public setBwdMaxSpeed(v: number): void {
         this.bwdSpeed = v;
     }
+
+    public getBodyRoll(): number {
+        return this.bodyRoll;
+    }
+
+    public getBodyPitch(): number {
+        return this.bodyPitch;
+    }
+
+    public getMusicTempo(): number {
+        const p = this.music.period;
+        if (p <= 0) return 0;
+        return 60000 / p;
+    }
     /**
  * Generates a random LED light show on the robot's NeoPixel strip.
  * Ported from random_light() in Python.
