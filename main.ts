@@ -123,7 +123,7 @@ namespace robotPu {
     export function setWalkSpeedRange(forward: number, backward: number): void {
         const robot = ensureRobot();
         robot.setFwdMaxSpeed(forward);
-        robot.setBwdMaxSpeed(-backward); // 注意：后退速度在内部存储为负值
+        robot.setBwdMaxSpeed(-backward); // Note: backward speed is stored as negative value internally
     }
 
     /**
@@ -139,7 +139,7 @@ namespace robotPu {
         if (unit === DistanceUnit.Centimeters) {
             return distanceCm;
         } else {
-            // 转换为英寸 (1英寸 ≈ 2.54厘米)
+            // Convert to inches (1 inch ≈ 2.54 cm)
             return distanceCm / 2.54;
         }
     }
@@ -198,7 +198,7 @@ namespace robotPu {
     export function setAmbienceLight(light: LightSelection, r: number, g: number, b: number): void {
         const robot = ensureRobot();
         
-        // 确保RGB值在0-255范围内
+        // Ensure RGB values are within 0-255 range
         r = Math.max(0, Math.min(255, r));
         g = Math.max(0, Math.min(255, g));
         b = Math.max(0, Math.min(255, b));
@@ -237,11 +237,11 @@ namespace robotPu {
     //% weight=64 blockGap=8
     export function setEyesState(leftEye: EyeState, rightEye: EyeState): void {
         const robot = ensureRobot();
-        // 禁用自动闪烁功能，防止状态机干扰手动设置
+        // Disable auto-blink feature to prevent state machine interference with manual settings
         robot.wk.setAutoBlinkEnabled(false);
-        robot.gst = 6; // 6是手动模式的索引
-        robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
+        robot.gst = 6; // 6 is the index for manual mode
+        robot.lastCmdTS = control.millis(); // Update command timestamp
+        robot.wk.lastBlinkTS = control.millis(); // Update blink timestamp
        
         const leftValue = leftEye === EyeState.On ? 1023 : 0;
         const rightValue = rightEye === EyeState.On ? 1023 : 0;
@@ -260,11 +260,11 @@ namespace robotPu {
     export function setLeftEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
         robot.wk.setAutoBlinkEnabled(false);
-        robot.gst = 6; // 6是手动模式的索引
-        robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
+        robot.gst = 6; // 6 is the index for manual mode
+        robot.lastCmdTS = control.millis(); // Update command timestamp
+        robot.wk.lastBlinkTS = control.millis(); // Update blink timestamp
        
-        // 将0-100的亮度范围转换为0-1023的PWM值
+        // Convert 0-100 brightness range to 0-1023 PWM value
         const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
         robot.wk.leftEyeBright(pwmValue);
     }
@@ -279,11 +279,11 @@ namespace robotPu {
     export function setRightEyeBrightness(brightness: number): void {
         const robot = ensureRobot();
         robot.wk.setAutoBlinkEnabled(false);
-        robot.gst = 6; // 6是手动模式的索引
-        robot.lastCmdTS = control.millis(); // 更新命令时间戳
-        robot.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
+        robot.gst = 6; // 6 is the index for manual mode
+        robot.lastCmdTS = control.millis(); // Update command timestamp
+        robot.wk.lastBlinkTS = control.millis(); // Update blink timestamp
         
-        // 将0-100的亮度范围转换为0-1023的PWM值
+        // Convert 0-100 brightness range to 0-1023 PWM value
         const pwmValue = Math.max(0, Math.min(1023, Math.floor(brightness * 10.23)));
         robot.wk.rightEyeBright(pwmValue);
     }
@@ -320,31 +320,31 @@ namespace robotPu {
     export function setMoveDirection(direction: MoveDirection): void {
         const robot = ensureRobot();
         
-        // 设置移动方向和速度
+        // Set movement direction and speed
         switch (direction) {
             case MoveDirection.Forward:
-                robot.walkSpeed = robot.fwdSpeed; // 使用前进最大速度
-                robot.walkDirection = 0; // 直行
+                robot.walkSpeed = robot.fwdSpeed; // Use forward max speed
+                robot.walkDirection = 0; // Straight
                 break;
             case MoveDirection.Backward:
-                robot.walkSpeed = robot.bwdSpeed; // 使用后退最大速度
-                robot.walkDirection = 0; // 直行
+                robot.walkSpeed = robot.bwdSpeed; // Use backward max speed
+                robot.walkDirection = 0; // Straight
                 break;
             case MoveDirection.SideLeft:
-                robot.walkSpeed = 0; // 停止前进/后退
-                robot.walkDirection = -1; // 左侧移
+                robot.walkSpeed = 0; // Stop forward/backward
+                robot.walkDirection = -1; // Left side step
                 break;
             case MoveDirection.SideRight:
-                robot.walkSpeed = 0; // 停止前进/后退
-                robot.walkDirection = 1; // 右侧移
+                robot.walkSpeed = 0; // Stop forward/backward
+                robot.walkDirection = 1; // Right side step
                 break;
             case MoveDirection.LeftTurn:
-                robot.walkSpeed = robot.fwdSpeed * 0.5; // 使用较慢的速度
-                robot.walkDirection = -1; // 左转向
+                robot.walkSpeed = robot.fwdSpeed * 0.5; // Use slower speed
+                robot.walkDirection = -1; // Left turn
                 break;
             case MoveDirection.RightTurn:
-                robot.walkSpeed = robot.fwdSpeed * 0.5; // 使用较慢的速度
-                robot.walkDirection = 1; // 右转向
+                robot.walkSpeed = robot.fwdSpeed * 0.5; // Use slower speed
+                robot.walkDirection = 1; // Right turn
                 break;
         }
         
@@ -357,8 +357,8 @@ namespace robotPu {
     function doCompletions(run: () => number, completions: number): void {
         let done = 0
         while (done < completions) {
-        const rc = run() // 调用传入的函数
-        if (rc == 0) done += 1 // 每次返回 0 时增加完成计数
+        const rc = run() // Call the passed function
+        if (rc == 0) done += 1 // Increment completion count each time 0 is returned
         }
     }
 
@@ -377,28 +377,28 @@ namespace robotPu {
         // Map speed from 1-10 to appropriate range
         const normalizedSpeed = Math.max(0.1, Math.min(1, speed / 10));
         
-        // 根据方向调用相应的机器人运动方法
+        // Call appropriate robot movement method based on direction
         switch (direction) {
             case MoveDirection.Forward:
-                // 向前走：使用用户指定的速度，直行
+                // Forward walk: use user-specified speed, straight
                 doCompletions(() => {
                     const currentSpeed = 2 * normalizedSpeed;
                     return robot.walk(currentSpeed, 0);
                 }, steps * 2);
                 break;
             case MoveDirection.Backward:
-                // 向后走：使用用户指定的速度，直行
+                // Backward walk: use user-specified speed, straight
                 doCompletions(() => {
                     const currentSpeed = 2 * normalizedSpeed;
                     return robot.walk(currentSpeed, 0);
                 }, steps * 2);
                 break;
             case MoveDirection.SideLeft:
-                // 向左侧步：负方向，使用用户指定的速度
+                // Left side step: negative direction, use user-specified speed
                 doCompletions(() => robot.sideStep(-normalizedSpeed * 0.2), steps * 2);
                 break;
             case MoveDirection.SideRight:
-                // 向右侧步：正方向，使用用户指定的速度
+                // Right side step: positive direction, use user-specified speed
                 doCompletions(() => robot.sideStep(normalizedSpeed * 0.2), steps * 2);
                 break;
         }
@@ -425,8 +425,8 @@ namespace robotPu {
     //% weight=51 blockGap=8
     export function sing(song: string): void {
         const robot = ensureRobot();
-        // 这里可以添加唱歌功能的实现
-        // 目前先使用talk方法作为占位
+        // Singing functionality can be added here
+        // Currently using talk method as placeholder
         robot.talk(song);
     }
 
@@ -440,15 +440,15 @@ namespace robotPu {
     export function setServoAngle(joint: ServoJoint, angle: number): void {
         const robot = ensureRobot();
         
-        // 将关节类型转换为内部索引
+        // Convert joint type to internal index
         const jointIndex = getServoIndex(joint);
         if (jointIndex >= 0) {
             angle = Math.min(180, Math.max(0, Math.floor(angle)));
-            // 切换到手动模式，防止状态机干扰
-            robot.gst = 6; // 6是手动模式的索引
-            robot.lastCmdTS = control.millis(); // 更新命令时间戳
-            robot.pr.servoTarget[jointIndex] = angle; // 更新目标位置
-            robot.wk.servo(jointIndex, angle); // 直接设置舵机角度
+            // Switch to manual mode to prevent state machine interference
+            robot.gst = 6; // 6 is the index for manual mode
+            robot.lastCmdTS = control.millis(); // Update command timestamp
+            robot.pr.servoTarget[jointIndex] = angle; // Update target position
+            robot.wk.servo(jointIndex, angle); // Directly set servo angle
         }
     }
 
@@ -463,21 +463,21 @@ namespace robotPu {
     export function smoothSetServoAngle(joint: ServoJoint, angle: number, step: number): void {
         const robot = ensureRobot();
         
-        // 将关节类型转换为内部索引
+        // Convert joint type to internal index
         const jointIndex = getServoIndex(joint);
-        // 切换到手动模式，防止状态机干扰
-        robot.gst = 6; // 6是手动模式的索引
-        robot.lastCmdTS = control.millis(); // 更新命令时间戳
+        // Switch to manual mode to prevent state machine interference
+        robot.gst = 6; // 6 is the index for manual mode
+        robot.lastCmdTS = control.millis(); // Update command timestamp
         
-        // 使用控制循环持续调用servoStep直到到达目标角度
+        // Use control loop to continuously call servoStep until target angle is reached
         control.inBackground(function () {
             while (true) {
                 robot.wk.servoStep(angle, step, jointIndex, robot.pr);
-                // 检查是否已经到达目标角度
+                // Check if target angle has been reached
                 if (Math.abs(angle - robot.pr.servoTarget[jointIndex]) <= step) {
                     break;
                 }
-                // 短暂延迟，控制更新频率
+                // Short delay to control update frequency
                 control.waitMicros(50000); // 50ms
             }
         });
@@ -505,7 +505,7 @@ namespace robotPu {
         }
     }
 
-    // ========== 控制器端积木块 ==========
+    // ========== Controller-side blocks ==========
 
     let controllerRadioGroup: number = 160;
 
@@ -652,7 +652,7 @@ namespace robotPu {
         radio.sendString("#put" + text);
     }
 
-    // ========== 接收器端积木块 ==========
+    // ========== Receiver-side blocks ==========
 
     let remoteControlEnabled: boolean = false;
     let currentTurnValue: number = 0;
