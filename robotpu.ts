@@ -375,8 +375,8 @@ class WK {
         this.blinkG = 4000;
         this.idle = false;
         this.currentState = 0;
-        this.autoLeftBlinkEnabled = true; // 默认启用自动左闪烁
-        this.autoRightBlinkEnabled = true; // 默认启用自动右闪烁
+        this.autoLeftBlinkEnabled = true; 
+        this.autoRightBlinkEnabled = true;
         // I2C is initialized automatically in MakeCode
     }
 
@@ -501,7 +501,6 @@ class WK {
      * Left eye brightness (0-1023).
      */
     public leftEyeBright(b: number): void {
-        // 直接控制左眼睛亮度，不经过任何判断
         pins.analogWritePin(AnalogPin.P12, b);
         this.leftEyeBrightness = b;
     }
@@ -510,7 +509,6 @@ class WK {
      * Right eye brightness (0-1023).
      */
     public rightEyeBright(b: number): void {
-        // 直接控制右眼睛亮度，不经过任何判断
         pins.analogWritePin(AnalogPin.P13, b);
         this.rightEyeBrightness = b;
     }
@@ -567,9 +565,9 @@ class WK {
      */
     public setAutoLeftBlinkEnabled(enabled: boolean): void {
         this.autoLeftBlinkEnabled = enabled;
-        // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
+
         if (!enabled && !this.eyeIsOn) {
-            pins.digitalWritePin(DigitalPin.P12, 0); // 确保左眼睛保持关闭
+            pins.digitalWritePin(DigitalPin.P12, 0); 
         }
     }
 
@@ -578,9 +576,9 @@ class WK {
      */
     public setAutoRightBlinkEnabled(enabled: boolean): void {
         this.autoRightBlinkEnabled = enabled;
-        // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
+
         if (!enabled && !this.eyeIsOn) {
-            pins.digitalWritePin(DigitalPin.P13, 0); // 确保右眼睛保持关闭
+            pins.digitalWritePin(DigitalPin.P13, 0); 
         }
     }
 
@@ -748,7 +746,7 @@ class RobotPu {
             [5]: () => this.joystick(),
             [6]: () => this.manual(),
             [7]: () => this.continuousMove(),
-            [8]: () => this.scheduledExecute() // 定时调用状态
+            [8]: () => this.scheduledExecute() 
         };
 
         this.wk.eyesCtl(1);
@@ -784,7 +782,6 @@ class RobotPu {
      * Handles continuous movement behavior. Similar to joystick but updates lastCmdTS continuously.
      */
     public continuousMove(): number {
-        // 更新命令时间戳，确保机器人持续执行当前指令直到下一个指令到来
         this.lastCmdTS = control.millis();
         // 1. If speed is near zero, handle stationary behavior
         if (Math.abs(this.walkSpeed) < 0.1) {
@@ -844,7 +841,6 @@ class RobotPu {
      */
     public turnInPlace(di: number): number {
         // 1. Use the same gait states as walking, but with different control parameters
-        // 对于原地旋转，我们可以使用前进或后退的状态序列，但调整控制向量
         let sts = this.pr.walkFwdStates;
         
         // 2. Reset the Control Vector to neutral first
@@ -854,8 +850,6 @@ class RobotPu {
         let movementSpeed = Math.abs(di) * this.fwdSpeed * 0.5;
         
         // 4. Execute the movement via the WK engine with adjusted control
-        // 通过调整方向参数di，实现一只脚不动，另一只脚运动的原地旋转效果
-        // 我们使用现有的moveBalance方法，它会根据di参数调整左右脚的运动
         return this.moveBalance(movementSpeed, di * 2, this.pr.walkFwdStates, this.pr.walkBwdStates);
     }
 
@@ -947,13 +941,10 @@ class RobotPu {
             this.alertLevel = 10; // Reset alert level
             // 2-second timeout to return to idle
             if (control.millis() - this.lastCmdTS > this.beaconTimeout) {
-                // 状态超时，切换到空闲状态前清理移动状态
                 this.walkSpeed = 0;
                 this.walkDirection = 0;
-                // 重置WK状态
                 this.wk.pos = 0;
                 this.wk.numSteps = 0;
-                // idle属性会通过isServoIdle方法自动更新，不需要手动重置
                 this.gst = 0;
             }
         }
@@ -982,7 +973,6 @@ class RobotPu {
 
     // Behavior States
     private idle() {
-        // 清理移动状态，确保空闲状态下不会继续执行移动命令
         this.walkSpeed = 0;
         this.walkDirection = 0;
         if (Math.randomRange(0, 100) == 0) this.alertLevel *= this.alertScale;
@@ -1043,12 +1033,10 @@ class RobotPu {
  * Manual servo control mode - does nothing to avoid interfering with user servo commands
  */
     public manual(): void {
-        // 清除移动状态，防止后续状态切换时继续执行移动命令
         this.walkSpeed = 0;
         this.walkDirection = 0;
-        // 自动更新命令时间戳，防止手动模式下超时
         this.lastCmdTS = control.millis();
-        this.wk.lastBlinkTS = control.millis(); // 更新闪烁时间戳
+        this.wk.lastBlinkTS = control.millis(); 
         // Do nothing else - this state allows direct servo control without interference
         // from the state machine's automatic movement commands
     }
@@ -1342,9 +1330,7 @@ class RobotPu {
         this.sleep_mode();
     }
 
-    /**
-     * 定时执行动作的实现方法
-     */
+
     public scheduledExecute(): void {
         if (this.scheduledAction === -1 || !this.isScheduledRunning) {
             return;
@@ -1383,28 +1369,23 @@ class RobotPu {
                     this.joystick();
                     break;
             }
-            // 执行完动作后，确保回到定时调用状态
+
             this.gst = 8;
             this.lastScheduledExecTS = currentTime;
             this.lastCmdTS = currentTime;
         }
     }
 
-    /**
-     * 启动定时调用
-     * @param action 要定时执行的动作
-     */
+
     public startScheduledExecute(action: number): void {
         this.scheduledAction = action;
         this.isScheduledRunning = true;
         this.lastScheduledExecTS = control.millis();
-        this.gst = 8; // 切换到定时调用状态
+        this.gst = 8; 
         this.lastCmdTS = control.millis();
     }
 
-    /**
-     * 停止定时调用
-     */
+ 
     public stopScheduledExecute(): void {
         this.isScheduledRunning = false;
         this.scheduledAction = -1;
@@ -1422,8 +1403,6 @@ class RobotPu {
             // State has changed, reset WK state variables
             this.wk.pos = 0;
             this.wk.numSteps = 0;
-            // idle属性会通过isServoIdle方法自动更新，不需要手动重置
-            // 更新前一个状态
             this.prevGst = this.gst;
         }
 
