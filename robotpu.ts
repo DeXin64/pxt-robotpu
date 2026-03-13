@@ -359,8 +359,8 @@ class WK {
     private blinkG: number;
     private idle: boolean;
     public currentState: number;
-    private autoLeftBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
-    private autoRightBlinkEnabled: boolean; // 添加自动闪烁启用/禁用标志
+    private autoLeftBlinkEnabled: boolean; // Add auto-blink enable/disable flags
+    private autoRightBlinkEnabled: boolean; // Add auto-blink enable/disable flags
 
     constructor() {
         this.i2cAddress = 16;
@@ -490,7 +490,7 @@ class WK {
      * Eyes ON/OFF control.
      */
     public eyesCtl(c: number): void {
-        // 直接控制左右眼睛，不经过任何判断
+        // Directly control left and right eyes without any judgment
         pins.digitalWritePin(DigitalPin.P12, c);//left eye
         pins.digitalWritePin(DigitalPin.P13, c);//right eye
         this.eyeIsOn = (c == 1);
@@ -555,9 +555,9 @@ class WK {
     public setAutoBlinkEnabled(enabled: boolean): void {
         this.autoLeftBlinkEnabled = enabled;
         this.autoRightBlinkEnabled = enabled;
-        // 如果禁用自动闪烁且眼睛是关闭的，保持关闭状态
-        if (!enabled && !this.eyeIsOn) {
-            // 确保眼睛保持关闭
+        // If auto-blink is disabled and eye is off, keep off state
+            if (!enabled && !this.eyeIsOn) {
+                // Ensure eye stays off
             this.eyesCtl(0);
         }
     }
@@ -617,11 +617,11 @@ class RobotPu {
     public content: Content;
     public music: MusicLib;
 
-    // 基本 identification
-        public name: string;
-        public sn: string;
-        public gst: number;
-        private prevGst: number; // 用于检测状态变化
+    // Basic identification
+    public name: string;
+    public sn: string;
+    public gst: number;
+    private prevGst: number; // Used for detecting state changes
 
         // Movement & State
             public lastCmdTS: number;
@@ -635,11 +635,11 @@ class RobotPu {
             private alertScale: number = 0.9;
             private restState: number = 26;
             
-            // 定时调用相关属性
-            public scheduledAction: number = -1; // 定时调用的目标动作
-            public scheduledInterval: number = 3000; // 内部时间间隔参数（毫秒）
-            public lastScheduledExecTS: number = 0; // 上次执行定时调用的时间戳
-            public isScheduledRunning: boolean = false; // 定时调用是否运行中
+            // Scheduled execution related properties
+            public scheduledAction: number = -1; // Target action for scheduled execution
+            public scheduledInterval: number = 3000; // Internal interval parameter (milliseconds)
+            public lastScheduledExecTS: number = 0; // Timestamp of last scheduled execution
+            public isScheduledRunning: boolean = false; // Whether scheduled execution is running
 
     // IMU & Balance
     private bodyPitch: number = 0;
