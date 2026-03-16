@@ -292,7 +292,7 @@ namespace robotPu {
      * Execute action. Perform the specified preset action. When "Explore" is selected, the robot will walk forward and automatically turn when encountering obstacles; when "Remote Control" is selected, it needs to be used with the "Remote Control" function.
      */
     //% group="Actions"
-    //% block="execute action %action"
+    //% block="set mode %action"
     //% weight=55 blockGap=8
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
