@@ -1381,7 +1381,7 @@ class RobotPu {
         this.scheduledAction = action;
         this.isScheduledRunning = true;
         this.lastScheduledExecTS = control.millis();
-        this.gst = 8; 
+        this.gst = 0; 
         this.lastCmdTS = control.millis();
     }
 
