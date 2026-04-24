@@ -1378,11 +1378,38 @@ class RobotPu {
 
 
     public startScheduledExecute(action: number): void {
-        this.scheduledAction = action;
-        this.isScheduledRunning = true;
-        this.lastScheduledExecTS = control.millis();
-        this.gst = 0; 
-        this.lastCmdTS = control.millis();
+        const currentTime = control.millis();
+
+        // executeAction() should dispatch once, not re-enter the scheduled loop.
+        this.scheduledAction = -1;
+        this.isScheduledRunning = false;
+        this.lastScheduledExecTS = currentTime;
+        this.lastCmdTS = currentTime;
+
+        switch (action) {
+            case 0: // Greet
+                this.gst = 0;
+                this.greet();
+                break;
+            case 1: // Rest
+                this.gst = 0;
+                break;
+            case 2: // Explore
+                this.gst = 1;
+                break;
+            case 3: // Jump
+                this.gst = 2;
+                break;
+            case 4: // Dance
+                this.gst = 3;
+                break;
+            case 5: // Kick
+                this.gst = 4;
+                break;
+            default:
+                this.gst = 0;
+                break;
+        }
     }
 
  
