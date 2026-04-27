@@ -296,6 +296,7 @@ namespace robotPu {
     //% weight=55 blockGap=8
     export function executeAction(action: Action): void {
         const robot = ensureRobot();
+        robot.scheduledInterval = 0;
         robot.startScheduledExecute(action);
     }
 

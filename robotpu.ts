@@ -1380,11 +1380,18 @@ class RobotPu {
     public startScheduledExecute(action: number): void {
         const currentTime = control.millis();
 
-        // executeAction() should dispatch once, not re-enter the scheduled loop.
-        this.scheduledAction = -1;
-        this.isScheduledRunning = false;
         this.lastScheduledExecTS = currentTime;
         this.lastCmdTS = currentTime;
+
+        if (action === 4) { // Dance
+            this.scheduledAction = action;
+            this.isScheduledRunning = true;
+            this.gst = 8;
+            return;
+        }
+
+        this.scheduledAction = -1;
+        this.isScheduledRunning = false;
 
         switch (action) {
             case 0: // Greet
@@ -1399,9 +1406,6 @@ class RobotPu {
                 break;
             case 3: // Jump
                 this.gst = 2;
-                break;
-            case 4: // Dance
-                this.gst = 3;
                 break;
             case 5: // Kick
                 this.gst = 4;
@@ -1425,6 +1429,11 @@ class RobotPu {
      * Processes the current state (gst) and executes the corresponding behavior.
      */
     public stateMachine(): void {
+        if (this.isScheduledRunning && this.gst !== 8) {
+            this.isScheduledRunning = false;
+            this.scheduledAction = -1;
+        }
+
         // 1. Check if state has changed
         if (this.gst !== this.prevGst) {
             // State has changed, reset WK state variables
