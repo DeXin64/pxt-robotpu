@@ -1,25 +1,45 @@
 # micro:bit PU Robot
 
-![](pu.png/)
+![](pu.png)
 
-This extension is designed to program and drive the PU Robot. You can purchase the PU Robot from the 
+This extension provides the non-speech control surface for the PU Robot on micro:bit.
+It focuses on movement, sensors, lights, remote control, and text messaging.
+
+Speech features have been removed from this repository so the core extension no longer carries a speech dependency.
+If you want speech blocks later, publish them as a separate optional extension.
+
+The PU Robot kit is available from the
 [Elecfreaks store](https://shop.elecfreaks.com/products/elecfreaks-micro-bit-pu-robot-kit?utm_source=copyToPasteBoard&utm_medium=product-links&utm_content=web).
 
-## Code Example
-```JavaScript
+## Example
+
+```javascript
 input.onButtonPressed(Button.A, function () {
-    robotPu.setServoAngle(robotPu.ServoJoint.LeftFoot, 45);  // 左脚45度
-    robotPu.setServoAngle(robotPu.ServoJoint.RightFoot, 135); // 右脚135度
-});
+    robotPu.executeAction(robotPu.Action.Greet)
+})
 
 input.onButtonPressed(Button.B, function () {
-    robotPu.setServoAngle(robotPu.ServoJoint.LeftLeg, 60);   // 左腿60度
-    robotPu.setServoAngle(robotPu.ServoJoint.RightLeg, 120); // 右腿120度
-});
+    robotPu.setWalkSpeed(robotPu.MoveDirection.Forward, 4, 6)
+})
 ```
 
+## Core API
+
+- Motion: `executeAction`, `setMoveDirection`, `setWalkSpeed`, `exitLoop`
+- Sensors: `ultrasonicDistance`, `bodyRoll`, `bodyPitch`, `musicTempo`, `frontDistanceArray`
+- Actuators: `setAmbienceLight`, `setEyesState`, `setLeftEyeBrightness`, `setRightEyeBrightness`
+- Servo control: `setServoTrim`, `setServoAngle`, `smoothSetServoAngle`
+- Remote control: `setControllerRadioGroup`, `readJoystickValue`, `initControllerButtons`, `getControllerButtonPressed`, `sendControlValue`
+- Receiver helpers: `enableRemoteControlWithGroup`, `disableRemoteControl`, `onControlValueReceived`, `getControlValue`, `sendTextMessage`
+
+## Test File
+
+`test.ts` contains a minimal hardware smoke test for servo movement.
+
 ## Supported targets
-for PXT/microbit
+
+- for PXT/microbit
 
 ## License
+
 MIT

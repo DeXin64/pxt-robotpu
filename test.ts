@@ -1,21 +1,26 @@
+robotPu.setWalkSpeedRange(2, 2)
+robotPu.setAmbienceLight(robotPu.LightSelection.All, 0, 0, 0)
+robotPu.setEyesState(robotPu.EyeState.On, robotPu.EyeState.On)
 
-const TEST_FOOT_JOINTS = false;
-const TEST_LEG_JOINTS = false;
+input.onButtonPressed(Button.A, function () {
+    robotPu.setServoAngle(robotPu.ServoJoint.LeftFoot, 45)
+    robotPu.setServoAngle(robotPu.ServoJoint.RightFoot, 135)
+})
 
+input.onButtonPressed(Button.B, function () {
+    robotPu.executeAction(robotPu.Action.Greet)
+    basic.pause(500)
+    robotPu.exitLoop()
+})
 
-if (TEST_FOOT_JOINTS) {
-    input.onButtonPressed(Button.A, function () {
-        robotPu.setServoAngle(robotPu.ServoJoint.LeftFoot, 45);  // 左脚45度
-        robotPu.setServoAngle(robotPu.ServoJoint.RightFoot, 135); // 右脚135度
-    });
-}
+input.onLogoEvent(TouchButtonEvent.Pressed, function () {
+    robotPu.setWalkSpeed(robotPu.MoveDirection.Forward, 2, 5)
+    robotPu.setMoveDirection(robotPu.MoveDirection.LeftTurn)
+})
 
-
-if (TEST_LEG_JOINTS) {
-    input.onButtonPressed(Button.B, function () {
-        robotPu.setServoAngle(robotPu.ServoJoint.LeftLeg, 60);   // 左腿60度
-        robotPu.setServoAngle(robotPu.ServoJoint.RightLeg, 120); // 右腿120度
-    });
-}
-
-
+let distance = robotPu.ultrasonicDistance(robotPu.DistanceUnit.Centimeters)
+let roll = robotPu.bodyRoll()
+let pitch = robotPu.bodyPitch()
+let tempo = robotPu.musicTempo()
+let front = robotPu.frontDistanceArray()
+let _smoke = distance + roll + pitch + tempo + front.length

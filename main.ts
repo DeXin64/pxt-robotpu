@@ -2,6 +2,7 @@
 //block="robot PU" blockId="robotPu"
 namespace robotPu {
     let robot: RobotPu;
+    const TEXT_MESSAGE_PREFIX = "#pumsg";
 
     function ensureRobot(): RobotPu {
         if (!robot) {
@@ -289,7 +290,7 @@ namespace robotPu {
     }
 
     /**
-     * Execute action. Perform the specified preset action. When "Explore" is selected, the robot will walk forward and automatically turn when encountering obstacles; when "Remote Control" is selected, it needs to be used with the "Remote Control" function.
+     * Execute action. Perform one of the robot's built-in non-speech actions.
      */
     //% group="Actions"
     //% block="set mode %action"
@@ -402,32 +403,6 @@ namespace robotPu {
                 doCompletions(() => robot.sideStep(normalizedSpeed * 0.2), steps * 2);
                 break;
         }
-    }
-
-    /**
-     * Talk. Make the robot say the specified text.
-     */
-    //% group="Actions"
-    //% block="talk %text"
-    //% text.shadow=text
-    //% weight=52 blockGap=8
-    export function talk(text: string): void {
-        const robot = ensureRobot();
-        robot.talk(text);
-    }
-
-    /**
-     * Sing. Make the robot sing the specified song or command.
-     */
-    //% group="Actions"
-    //% block="sing %song"
-    //% song.shadow=text
-    //% weight=51 blockGap=8
-    export function sing(song: string): void {
-        const robot = ensureRobot();
-        // Singing functionality can be added here
-        // Currently using talk method as placeholder
-        robot.talk(song);
     }
 
     /**
@@ -649,7 +624,7 @@ namespace robotPu {
     //% text.shadow=text
     //% weight=35 blockGap=8
     export function sendTextMessage(text: string): void {
-        radio.sendString("#put" + text);
+        radio.sendString(TEXT_MESSAGE_PREFIX + text);
     }
 
     // ========== Receiver-side blocks ==========
@@ -716,8 +691,8 @@ namespace robotPu {
         radio.onReceivedString(function (receivedString: string) {
             if (!remoteControlEnabled) return;
             
-            if (receivedString.substr(0, 4) == "#put") {
-                currentTextMessage = receivedString.substr(4);
+            if (receivedString.substr(0, TEXT_MESSAGE_PREFIX.length) == TEXT_MESSAGE_PREFIX) {
+                currentTextMessage = receivedString.substr(TEXT_MESSAGE_PREFIX.length);
                 if (onTextMessageHandler) {
                     onTextMessageHandler(currentTextMessage);
                 }

@@ -1,13 +1,12 @@
 {
   "name": "pxt-robotpu",
-  "version": "1.0.12",
-  "description": "Robot PU MakeCode extension exposing walk, autopilot, dance, kick, jump, rest, talk, sing.",
+  "version": "2.0.0",
+  "description": "Robot PU MakeCode extension exposing movement, sensors, lights, remote control, and text messaging.",
   "license": "MIT",
   "dependencies": {
     "core": "*",
     "radio": "*",
-    "neopixel": "github:microsoft/pxt-neopixel",
-    "billy": "github:adamish/pxt-billy"
+    "neopixel": "github:microsoft/pxt-neopixel"
   },
   "files": [
     "robotpu.ts",
