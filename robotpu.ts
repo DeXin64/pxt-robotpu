@@ -197,6 +197,93 @@ class MusicLib {
         return isABeatResult;
     }
 }
+class Content {
+    notes: string[];
+    chord: number[][];
+    pattern: number[][];
+    loc: string[];
+    act: string[];
+    sub: string[];
+    obj: string[];
+    sentences: string[];
+
+    constructor() {
+        this.notes = ["#70REYY", "#62MIYY", "#58FAOR", "#52SOHW", "#46LAOR", "#42TIYY", "#39DOWW",
+            "#35REYY", "#31MIYY", "#29FAOR", "#26SOHW", "#23LAOR", "#21TIYY", "#20DOWW"];
+        this.chord = [[0, 3, 5], [0, 2, 4, 6], [0, 2, 4, 7], [0, 1, 2, 3]];
+        this.pattern = [[0, 0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1], [3]];
+        this.loc = ["here", "there", "up", "down", "left", "right", "front", "back", ""];
+        this.act = ["liked", "saw", "heard", "felt", ""];
+        this.sub = ["I", "He", "She", "They", ""];
+        this.obj = ["me", "you", "him", "her", "them", "it", "the dance", "the song", ""];
+        this.sentences = ["I am so tired.", "Let's go, go, go!", "Be careful!", "Life lies in motion.",
+            "Let's pair up!", "I am stuck!", "New song:", "Easy peasy!", "I like my backpack",
+            "I love you", "You are the best!", "yeh!", "woohoo!"];
+    }
+
+    // Helper to pick random item from an array
+    private choice<T>(arr: T[]): T {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Helper to get random integer between min and max (inclusive)
+    private randint(min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /**
+     * Composes a procedural song string
+     */
+    composeSong(): string {
+        let song: string[] = [];
+        let b = this.notes.length;
+        let d = this.choice(this.chord);
+        let w = this.choice(this.pattern);
+        let k = 0;
+
+        while (k < 16) {
+            let l = this.randint(0, b - 1);
+            for (let m of w) {
+                let n = (l + this.choice(d) + this.choice([-1, 0, 0, 0, 0, 1])) % b;
+                if (n < 0) n += b; // Handle negative modulo
+
+                let o = this.notes[n];
+
+                if (m >= 1 && this.randint(0, 8) == 0) {
+                    song.push(o);
+                    for (let count = 0; count < m; count++) {
+                        let innerIdx = (n + this.choice([-1, 0, 1])) % b;
+                        if (innerIdx < 0) innerIdx += b;
+                        song.push(this.notes[innerIdx]);
+                    }
+                } else {
+                    // Python: n + n[-1] * 4 * j
+                    // Appends the last character of the note string repeated (4 * j) times
+                    let repeatedChar = o.charAt(o.length - 1);
+                    let suffix = "";
+                    for (let count2 = 0; count2 < (4 * m); count2++) {
+                        suffix += repeatedChar;
+                    }
+                    song.push(o + suffix);
+                }
+                k += m + 1;
+            }
+            d = this.choice(this.chord);
+            w = this.choice(this.pattern);
+        }
+        return song.join("");
+    }
+
+    /**
+     * Generates a random "cute" sentence
+     */
+    cuteWords(): string {
+        return this.choice(this.sub) + " " +
+            this.choice(this.act) + " " +
+            this.choice(this.obj) + " " +
+            this.choice(this.loc) + ".";
+    }
+}
 class HCSR04 {
     timeoutUS: number;
     trig: DigitalPin;
@@ -525,6 +612,7 @@ class RobotPu {
     public wk: WK;
     public sonar: HCSR04;
     public np: neopixel.Strip;
+    public content: Content;
     public music: MusicLib;
 
     // Basic identification
@@ -628,10 +716,13 @@ class RobotPu {
         // Hardware Setup
         this.sonar = new HCSR04(DigitalPin.P2, DigitalPin.P8);
         this.np = neopixel.create(DigitalPin.P16, 4, NeoPixelMode.RGB);
+        this.content = new Content();
         this.music = new MusicLib();
 
-        // Radio Setup
+        // Audio & Radio Setup
         radio.setGroup(this.radioGroupID);
+        billy.voicePreset(BillyVoicePreset.LittleRobot);
+        music.setVolume(255);
 
         // Initialize Command Dictionary
         this.cmdFuncDict = {
@@ -766,9 +857,8 @@ class RobotPu {
         // basic.showNumber(this.radioGroupID);
     }
 
-    private visualGreeting(): void {
-        this.wk.eyesCtl(1);
-        this.randomLight();
+    public talk(text: string) {
+        billy.say(text);
     }
 
     /**
@@ -875,7 +965,7 @@ class RobotPu {
                 // Return to previous state after standing up
                 if (this.gst == -3) {
                     this.gst = this.lastState;
-                    this.visualGreeting();
+                    this.talk("Thanks");
                 }
             }
         }
@@ -911,8 +1001,12 @@ class RobotPu {
         // 1. Trigger the "Knight Rider" style eye flash effect
         this.wk.flash();
 
-        // 2. Randomly publish a status code for remote monitoring
+        // 2. Randomly trigger a voice request for help (approx 1 in 500 cycles)
         if (Math.randomRange(0, 500) == 0) {
+            // Use pxt-billy to speak the distress message
+            this.talk("Help me stand up!");
+
+            // 3. Publish a status code via radio for remote monitoring
             this.sendStatusCode("E2");
         }
     }
@@ -925,7 +1019,12 @@ class RobotPu {
         // 1. Trigger the eye pulsing animation
         this.wk.flash();
 
-        // 2. Move to the Fetal State (Index 1)
+        // 2. 0.5% chance to shout for help (random.randint(0, 200) == 0)
+        if (Math.randomRange(0, 200) == 0) {
+            this.talk("Help me!");
+        }
+
+        // 3. Move to the Fetal State (Index 1)
         // states: [1], sync_list: all servos [0-5], speed: 2.0, async: none, async_sp: 0.5
         this.wk.move(this.pr, [1], [0, 1, 2, 3, 4, 5], 2.0, [], 0.5);
     }
@@ -994,8 +1093,9 @@ class RobotPu {
 
             dis -= 12 + Math.randomRange(-5, 0);
 
-            // Low probability to publish a warning code via radio
+            // Low probability to shout for help via radio
             if (Math.randomRange(0, 400) == 0) {
+                this.talk(this.content.sentences[5]);
                 this.sendStatusCode("W1"); // Send Warning Code 1
             }
         } else {
@@ -1222,7 +1322,7 @@ class RobotPu {
         if (this.checkWakeup() == 1) {
             // Return to Idle/Standby state
             this.gst = 0;
-            this.visualGreeting();
+            this.talk("I am awake"); // Optional feedback
         }
     }
 
@@ -1363,10 +1463,19 @@ class RobotPu {
         }
     }
     /**
-     * Makes the robot greet using visual feedback only.
+     * Executes singing logic using the pxt-billy engine.
+     * @param s The phonetic or musical string to be synthesized.
+     */
+    public sing(s: string): void {
+        music.play(music.stringPlayable(s, 120), music.PlaybackMode.InBackground)
+    }
+    /**
+     * Makes the robot greet using text-to-speech.
+     * The robot will speak its serial number and name.
      */
     public greet(): void {
-        this.visualGreeting();
+        // 1. Combine the identification strings
+        this.talk("My name is " + this.sn + " " + this.name);
     }
 
     /**
@@ -1529,7 +1638,7 @@ class RobotPu {
     public roll(v: number) { this.headYawBias = (v + this.headYawBias) * 0.5; }
     public pitch(v: number) { this.headPitchBias = (v * -1 + this.headPitchBias) * 0.5; }
     public button(v: number) { this.gst = v; }
-    public logo(v: number) { basic.showString(this.sn); }
+    public logo(v: number) { this.talk(this.sn); }
     public pose(v: number) { this.restState = v; this.gst = 0; }
 
     public setTrim(leftFoot: number, leftLeg: number, rightFoot: number, rightLeg: number, headYaw: number, headPitch: number) {
@@ -1611,10 +1720,27 @@ class RobotPu {
         // 1. Update the timestamp of the last received command
         this.lastCmdTS = control.millis()
 
-        // 2. Process #pun: Name/Serial Update
-        if (s.substr(0, 4) == "#pun") {
+        // 2. Process #put: Text-to-Speech
+        if (s.substr(0, 4) == "#put") {
+            this.talk(s.substr(4));
+        }
+
+        // 3. Process #pus: Buffered Singing (6 segments)
+        else if (s.substr(0, 4) == "#pus") {
+            // Assume s_list is an array of strings defined in the class
+            this.sing(s.substr(4));
+        }
+
+        // 4. Process #puhi: Greeting
+        else if (s.substr(0, 5) == "#puhi") {
+            this.talk("My friend " + s.substr(5) + " is here")
+            this.sendStatusCode("ACK")
+        }
+
+        // 5. Process #pun: Name/Serial Update
+        else if (s.substr(0, 4) == "#pun") {
             this.sn = s.substr(4);
-            this.visualGreeting();
+            this.greet();
         }
     }
 }
